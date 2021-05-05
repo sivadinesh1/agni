@@ -1,0 +1,7 @@
+{
+  "name": "Agni",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
