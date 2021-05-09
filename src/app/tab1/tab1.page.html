@@ -1,17 +1,133 @@
-<ion-header [translucent]="true">
+<!-- <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Tab 1
+    <ion-title style="padding: 1rem">
+      <img src="/assets/maps-and-flags.svg" alt="" srcset="" width="24px" />
+      {{this.locality}}
     </ion-title>
   </ion-toolbar>
-</ion-header>
+</ion-header> -->
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div *ngIf="!locationdetected">
+    <div
+      style="
+        display: grid;
+        justify-content: center;
+        align-content: center;
+        height: 100vh;
+      "
+    >
+      <div
+        style="
+          color: #ca9100;
+          font-size: 48px;
+          text-align: center;
+          font-weight: 400;
+          line-height: 42px;
+        "
+      >
+        AGNIHOTRA
+      </div>
+      <div
+        style="
+          color: #ca9100;
+          font-size: 48px;
+          text-align: center;
+          font-weight: 400;
+          line-height: 42px;
+        "
+      >
+        TIMER
+      </div>
+      <div style="color: #999999; font-size: 16px; text-align: center">
+        FREE DAILY AGNIHOTRA TIME GUIDE
+      </div>
+      <div style="padding: 2rem; text-align: center">
+        <img src="/assets/maps-and-flags.svg" alt="" srcset="" width="24px" />
+        <div>Detecting your location...</div>
+      </div>
+    </div>
+  </div>
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+  <div
+    *ngIf="locationdetected"
+    style="
+      display: grid;
+      padding: 1rem;
+      border-bottom: 1px solid rgb(201, 201, 201);
+      text-align: center;
+    "
+  >
+    <span>
+      <img src="/assets/maps-and-flags.svg" alt="" srcset="" width="24px" />
+    </span>
+    <span> {{this.locality}} </span>
+  </div>
+
+  <!-- <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Agni Hotra</ion-title>
+    </ion-toolbar>
+  </ion-header> -->
+
+  <div
+    *ngIf="locationdetected"
+    style="display: grid; grid-template-rows: 1fr 2fr 2fr; height: 100vh"
+  >
+    <div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; padding: 1rem">
+        <div>
+          <div>
+            <span style="font-weight: 400; font-size: 24px; color: #535353">
+              {{this.todayDate}}
+            </span>
+          </div>
+          <div>
+            <span style="color: #999999; font-size: 16px"> TODAY </span>
+          </div>
+        </div>
+        <div style="text-align: right">
+          <div style="font-size: 24px">
+            <span style="font-weight: 400; font-size: 24px; color: #535353">
+              {{this.now}}
+            </span>
+            <span style="font-weight: 600; font-size: 24px; color: #535353">
+              {{this.nowA}}
+            </span>
+          </div>
+          <div style="color: #999999; font-size: 16px">
+            TIME IN {{this.locality}}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="background-color: antiquewhite">
+      <div *ngIf="sunsetPrayer === 'over' && sunsetPrayer==='over' ">
+        <div>START MORNING AGNIHOTRA YAGYA AT (SUNRISE)</div>
+        <div>{{this.nextsunrise}}</div>
+        <div>TIME TO SUNRISE</div>
+        <div>{{counterTimersMins}}m : {{counterTimersSecs}}s</div>
+      </div>
+
+      Middle
+      <p>Time to Sunset: {{timetoSunset}}</p>
+      <p>Time to Sunrise: {{timetoSunrise}}</p>
+      <ion-button (click)="whereAmI()">Where am I?</ion-button>
+    </div>
+    <div>NEXT YAGYA TIME(TODAY EVENTINT)</div>
+  </div>
+
+  <!--   
+  <div>
+    <p>Lat: {{lat}}, Lag: {{lng}}</p>
+    <p>Sunrise:{{this.sunrise}}</p>
+    <p>Sunset:{{this.sunset}}</p>
+    
+    <p>{{counterTimer}}</p>
+    <p>TIME TO SUNSET</p>
+    <p>{{counterTimersMins}}m : {{counterTimersSecs}}s</p>
+    <p *ngIf="getready">GET READY</p>
+
+    <ion-button (click)="whereAmI()">Where am I?</ion-button>
+  </div> -->
 </ion-content>

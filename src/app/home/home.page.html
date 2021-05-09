@@ -1,0 +1,311 @@
+<!-- <ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title style="padding: 1rem">
+      <img src="/assets/maps-and-flags.svg" alt="" srcset="" width="24px" />
+      {{this.locality}}
+    </ion-title>
+  </ion-toolbar>
+</ion-header> -->
+
+<ion-content [fullscreen]="true">
+  <div
+    *ngIf="!locationdetected"
+    style="
+      display: grid;
+      grid-template-rows: 1fr 30px;
+      height: calc(100vh - 30px);
+    "
+  >
+    <div style="display: grid; justify-content: center; align-content: center">
+      <div
+        style="
+          color: #ca9100;
+          font-size: 48px;
+          text-align: center;
+          font-weight: 500;
+          line-height: 42px;
+        "
+      >
+        AGNIHOTRA
+      </div>
+      <div
+        style="
+          color: #ca9100;
+          font-size: 48px;
+          text-align: center;
+          font-weight: 500;
+          line-height: 42px;
+        "
+      >
+        TIMER
+      </div>
+      <div
+        style="
+          color: #999999;
+          font-size: 16px;
+          text-align: center;
+          padding: 1rem;
+        "
+      >
+        FREE DAILY AGNIHOTRA TIME GUIDE
+      </div>
+      <div style="padding: 5rem 2rem 2rem 2rem; text-align: center">
+        <img src="/assets/maps-and-flags.svg" alt="" srcset="" width="32px" />
+        <div style="padding: 1rem">Detecting your location...</div>
+      </div>
+    </div>
+    <div style="color: #999999; font-size: 12px; text-align: center">
+      Copyright 2021 VPRANA LLP
+    </div>
+  </div>
+
+  <div
+    *ngIf="locationdetected"
+    style="
+      display: grid;
+      padding: 1rem;
+      border-bottom: 1px solid rgb(201, 201, 201);
+      text-align: center;
+    "
+  >
+    <span>
+      <img
+        src="/assets/maps-and-flags.svg"
+        alt=""
+        srcset=""
+        width="24px"
+      />&nbsp;{{this.locality}}
+    </span>
+  </div>
+
+  <div
+    *ngIf="locationdetected"
+    style="
+      display: grid;
+      grid-template-rows: 1fr 2fr 2fr 30px;
+      min-height: calc(100vh - 60px);
+    "
+  >
+    <div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; padding: 1rem">
+        <div>
+          <div>
+            <span style="font-weight: 400; font-size: 24px; color: #535353">
+              {{this.todayDate}}
+            </span>
+          </div>
+          <div>
+            <span style="color: #999999; font-size: 16px"> TODAY </span>
+          </div>
+        </div>
+        <div style="text-align: right">
+          <div style="font-size: 24px">
+            <span style="font-weight: 400; font-size: 24px; color: #535353">
+              {{this.now}}
+            </span>
+            <span style="font-weight: 600; font-size: 24px; color: #535353">
+              {{this.nowA}}
+            </span>
+          </div>
+          <div style="color: #999999; font-size: 16px">
+            TIME IN {{this.locality}}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <!-- SUNRISE & SUNSET OVER  -->
+
+      <div
+        *ngIf="sunsetPrayer === 'over' && sunsetPrayer==='over' "
+        style="padding: 10px 10px 24px 10px"
+        [ngClass]="{ 'getready': getready === true, 'normal': (getready === false && live === false)  }"
+      >
+        <div
+          style="
+            font-size: 12px;
+            font-weight: 400;
+
+            padding: 8px;
+            text-align: center;
+          "
+          [ngClass]="{ 'actnTxtClrReady': getready === true, 'actnTxtClrNormal': (getready === false && live === false) }"
+        >
+          START MORNING AGNIHOTRA YAGYA AT (SUNRISE)
+        </div>
+        <div
+          style="
+            text-align: center;
+            margin: 0 auto;
+            width: 80%;
+            padding-bottom: 10px;
+          "
+          [ngClass]="{ 'borderWhite': getready === true, 'borderYellow': (getready === false && live === false) }"
+        >
+          <!-- NEXT SUNRISE DETAILS -->
+
+          <span style="font-size: 42px"> {{this.nextsunriseHHMM}} </span>
+          <span style="font-size: 42px" class="AGrey">
+            {{this.nextsunriseA}}
+          </span>
+        </div>
+
+        <div style="text-align: center; padding: 10px">TIME TO SUNRISE</div>
+        <div style="font-size: 24px; text-align: center; padding: 0px 10px">
+          {{counterTimersHours}}h : {{counterTimersMins}}m :
+          {{counterTimersSecs}}s
+        </div>
+      </div>
+
+      <!-- SUNRISE OVER SUNSET YET TO HAPPEN -->
+
+      <div
+        *ngIf="this.sunrisePrayer === 'over' && this.sunsetPrayer === 'notover' && this.live === false"
+        style="padding: 10px 10px 24px 10px"
+        [ngClass]="{ 'getready': getready === true, 'normal': (getready === false && live === false), 'live': live === true  }"
+      >
+        <div
+          style="
+            font-size: 12px;
+            font-weight: 400;
+            padding: 8px;
+            text-align: center;
+          "
+          [ngClass]="{ 'actnTxtClrReady': getready === true, 'actnTxtClrNormal': (getready === false && live === false) }"
+        >
+          START EVENING AGNIHOTRA YAGYA AT (SUNSET)
+        </div>
+        <div
+          style="
+            text-align: center;
+            margin: 0 auto;
+            width: 80%;
+            padding-bottom: 10px;
+          "
+          [ngClass]="{ 'borderWhite': getready === true, 'borderYellow': (getready === false && live === false) }"
+        >
+          <span style="font-size: 42px"> {{this.sunsetHHMM}} </span>
+          <span style="font-size: 42px" class="AGrey"> {{this.sunsetA}} </span>
+        </div>
+        <div style="text-align: center; padding: 10px">TIME TO SUNSET</div>
+        <div style="font-size: 24px; text-align: center; padding: 0px 10px">
+          {{counterTimersHours}}h : {{counterTimersMins}}m :
+          {{counterTimersSecs}}s
+        </div>
+      </div>
+      <p
+        *ngIf="getready"
+        style="
+          background-color: #ffe600;
+          color: #000;
+          padding: 1rem;
+          font-size: 24px;
+          font-weight: 500;
+        "
+      >
+        GET READY...
+      </p>
+
+      <div
+        *ngIf="this.sunrisePrayer === 'over' && this.sunsetPrayer === 'over' && this.live === true "
+        style="padding: 10px 10px 24px 10px"
+        class="live"
+      >
+        <div
+          style="
+            font-size: 12px;
+            font-weight: 400;
+            color: #fff;
+            padding: 8px;
+            text-align: center;
+          "
+        >
+          <div
+            style="
+              text-align: center;
+
+              margin: 0 auto;
+              width: 80%;
+
+              padding-bottom: 10px;
+            "
+            class="borderWhite"
+          >
+            <div style="font-size: 14px; color: #fff">DO YAGYA NOW</div>
+            <span style="font-size: 42px"> {{this.sunsetHHMM}} </span>
+            <span style="font-size: 42px" class="AGrey">
+              {{this.sunsetA}}
+            </span>
+          </div>
+          <div style="font-size: 20px; font-weight: 700; font-style: italic">
+            {{this.sunsetCopyTxt}}
+          </div>
+        </div>
+      </div>
+
+      <div
+        *ngIf="this.sunrisePrayer === 'over' && this.sunsetPrayer === 'notover' && this.live === true "
+        style="padding: 10px 10px 24px 10px"
+        class="live"
+      >
+        <div
+          style="
+            font-size: 12px;
+            font-weight: 400;
+            color: #fff;
+            padding: 8px;
+            text-align: center;
+          "
+        >
+          <div
+            style="
+              text-align: center;
+
+              margin: 0 auto;
+              width: 80%;
+
+              padding-bottom: 10px;
+            "
+            class="borderWhite"
+          >
+            <div style="font-size: 14px; color: #fff">DO YAGYA NOW</div>
+            <span style="font-size: 42px"> {{this.sunriseHHMM}} </span>
+            <span style="font-size: 42px" class="AGrey">
+              {{this.sunriseA}}
+            </span>
+          </div>
+          <div style="font-size: 20px; font-weight: 700; font-style: italic">
+            {{this.sunriseCopyTxt}}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="display: grid; align-content: end">
+      <div
+        style="text-align: center; padding: 1rem 1rem 8px 1rem; font-size: 12px"
+      >
+        <span>NEXT YAGYA TIME </span>
+        <span
+          *ngIf="this.sunrisePrayer === 'over' && this.sunsetPrayer === 'notover' "
+          >(
+          <span style="font-weight: 600"> TOMORROW </span>
+          <span> {{tomorrowll}} </span>
+          )
+        </span>
+      </div>
+      <div
+        style="
+          padding: 0rem 1rem 1rem 1rem;
+          font-size: 24px;
+          text-align: center;
+        "
+      >
+        <span>{{nextsunriseHHMM}}</span>&nbsp;
+        <span style="color: #999999">{{nextsunriseA}}</span>
+      </div>
+    </div>
+    <div style="color: #999999; text-align: center; font-size: 12px">
+      AGNIHOTRA TIMER
+    </div>
+  </div>
+</ion-content>

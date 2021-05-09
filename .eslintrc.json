@@ -41,7 +41,7 @@
     {
       "files": ["*.html"],
       "extends": ["plugin:@angular-eslint/template/recommended"],
-      "rules": {}
+      "rules": { "no-debugger": "off" }
     }
   ]
 }
