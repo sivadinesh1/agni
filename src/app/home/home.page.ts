@@ -4,8 +4,9 @@ import {
   OnInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
+  ViewChild,
 } from '@angular/core';
-import { Geolocation } from '@ionic-native/geolocation/ngx';
+
 import {
   NativeGeocoder,
   NativeGeocoderResult,
@@ -15,6 +16,8 @@ import {
 import { CommonApiService } from 'src/app/services/common-api.service';
 import * as moment from 'moment';
 import { Subscription, Observable, timer } from 'rxjs';
+import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -23,6 +26,8 @@ import { Subscription, Observable, timer } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomePage implements OnInit {
+  @ViewChild('myCheckbox') myCheckbox;
+
   lat: any;
   lng: any;
 
@@ -37,7 +42,7 @@ export class HomePage implements OnInit {
   nowA: any;
   todayDate: any;
   locality: any;
-  currentTime: moment.Moment;
+
   everySecond: Observable<number> = timer(0, 1000);
   subscription: Subscription;
 
@@ -61,11 +66,11 @@ export class HomePage implements OnInit {
   nextsunrise: any;
   nextsunset: any;
   nextsunriseHHMM: any;
+  nextsunriseSS: any;
   nextsunsetHHMM: any;
+  nextsunsetSS: any;
   nextsunriseA: any;
   nextsunsetA: any;
-
-  locationdetected = false;
 
   options: NativeGeocoderOptions = {
     useLocale: true,
@@ -77,21 +82,31 @@ export class HomePage implements OnInit {
   tomorrowll: any;
 
   sunriseHHMM: any;
+  sunriseSS: any;
   sunsetHHMM: any;
+  sunsetSS: any;
 
   sunriseA: any;
   sunsetA: any;
 
   live: any;
+  paramsSubscription: Subscription;
 
   constructor(
-    private geolocation: Geolocation,
     private nativeGeocoder: NativeGeocoder,
     private commonApiService: CommonApiService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router,
+    private route: ActivatedRoute
   ) {
+    this.paramsSubscription = this.route.params.subscribe((params) => {
+      this.lat = params.lat;
+      this.lng = params.lng;
+      this.locality = params.locality;
+    });
+
     // inits
-    this.baiscInit();
+    this.basicInit();
 
     this.todayDate = moment().format('D MMM YYYY');
     this.now = moment().format('h:mm');
@@ -102,10 +117,17 @@ export class HomePage implements OnInit {
     this.tomorrowll = moment().add(1, 'days').format('ll');
   }
 
-  baiscInit() {
-    this.sunsetPrayer = 'notover';
-    this.sunrisePrayer = 'notover';
-    this.locationdetected = false;
+  basicInit() {
+    // combinations:
+    // Today : Sunrise & Sunset (Not Over)
+    // Today : Sunrise (Over) & Sunset(Not Over)
+    // Today : Sunrise (Over) & Sunset (Over)
+    // Today : Sunrise & Sunset (Over)
+    // Today : Sunrise & Sunset (Not Over) : Sunrise (Live)
+    // Today : Sunrise (Over) & Sunset (Not Over) : Sunset (Live)
+    this.sunrisePrayer = '';
+    this.sunsetPrayer = '';
+
     this.live = false;
     this.getready = false;
   }
@@ -113,51 +135,35 @@ export class HomePage implements OnInit {
   ngOnInit() {
     // Current Time counter
     this.subscription = this.everySecond.subscribe((seconds) => {
-      this.currentTime = moment();
+      this.now = moment().format('h:mm');
+      this.nowA = moment().format('A');
 
       this.cdr.detectChanges();
     });
-  }
+    // Attn
+    // this.getGeoDecoder(this.lat, this.lng);
+    console.log('dinesh lat >> ' + this.lat);
+    console.log('dinesh lng >> ' + this.lng);
+    console.log('dinesh locality >> ' + this.locality);
 
-  ionViewWillEnter() {
-    // call this method on init
-    this.whereAmI();
-  }
-
-  whereAmI() {
-    this.geolocation
-      .getCurrentPosition({
-        timeout: 10000,
-        enableHighAccuracy: true,
-      })
-      .then((resp) => {
-        this.lat = resp.coords.latitude;
-        this.lng = resp.coords.longitude;
-
-        this.cdr.detectChanges();
-
-        this.getGeoDecoder(resp.coords.latitude, resp.coords.longitude);
-      })
-      .catch((error) => {
-        console.log('Error getting location', error);
-      });
+    this.getSunriseSunset(this.lat, this.lng, this.today);
   }
 
   // get locality details based on lat & lng
-  getGeoDecoder(lat, lng) {
-    this.nativeGeocoder
-      .reverseGeocode(lat, lng, this.options)
-      .then((result: NativeGeocoderResult[]) => {
-        this.locality = result[0].locality;
-        this.locationdetected = true;
-        this.cdr.detectChanges();
-        // ATTN
-        this.getSunriseSunset(lat, lng, this.today);
-      })
-      .catch((error: any) => console.log(error));
-    // ATTN
-    //this.getSunriseSunset(lat, lng, this.today);
-  }
+  // getGeoDecoder(lat, lng) {
+  //   this.nativeGeocoder
+  //     .reverseGeocode(lat, lng, this.options)
+  //     .then((result: NativeGeocoderResult[]) => {
+  //       this.locality = result[0].locality;
+
+  //       this.cdr.detectChanges();
+  //       // ATTN
+  //       this.getSunriseSunset(lat, lng, this.today);
+  //     })
+  //     .catch((error: any) => console.log(error));
+  //   // ATTN
+  //   // this.getSunriseSunset(lat, lng, this.today);
+  // }
 
   getSunriseSunset(lat, lng, when) {
     this.commonApiService
@@ -177,9 +183,11 @@ export class HomePage implements OnInit {
         );
 
         this.sunriseHHMM = moment(data.results.sunrise).format('h:mm');
+        this.sunriseSS = moment(data.results.sunrise).format('ss');
         this.sunriseA = moment(data.results.sunrise).format('A');
 
         this.sunsetHHMM = moment(data.results.sunset).format('h:mm');
+        this.sunsetSS = moment(data.results.sunset).format('ss');
         this.sunsetA = moment(data.results.sunset).format('A');
 
         this.timetoSunset = moment(data.results.sunset).fromNow();
@@ -191,14 +199,6 @@ export class HomePage implements OnInit {
         const hours = duration.hours(); //hours instead of asHours
         const minutes = duration.minutes(); //minutes instead of asMinutes
         const seconds = duration.seconds();
-
-        console.log('dinesh hrs: ' + hours);
-        console.log('dinesh min : ' + minutes);
-        console.log('dinesh SSs : ' + seconds);
-
-        // hasSunrisedToday
-        console.log('dinesh $$ ' + this.timetoSunrise);
-        console.log('dinesh ** ' + this.timetoSunset);
 
         // *** find if SUNRISE (TODAY) is over or not *** //
         // *** If sunrise NOT OVER then sunset is also NOT OVER *** //
@@ -218,11 +218,19 @@ export class HomePage implements OnInit {
         } else if (this.timetoSunrise.indexOf('in') !== -1) {
           this.sunrisePrayer = 'notover';
           this.sunsetPrayer = 'notover';
+          this.tomorrowSunsetSunrise('today');
           this.counterCalculator(data, 'waitingsunrise');
         }
 
         this.cdr.detectChanges();
       });
+  }
+
+  playAudio() {
+    const audio = new Audio();
+    audio.src = '../../assets/bell.mp3';
+    audio.load();
+    audio.play();
   }
 
   counterCalculator(data, action) {
@@ -263,60 +271,37 @@ export class HomePage implements OnInit {
   }
 
   goLive() {
+    this.playAudio();
     setInterval(() => {
       this.live = false;
       this.getready = false;
-    }, 300000);
+    }, 180000); // 3 seconds
   }
 
   tomorrowSunsetSunrise(when) {
     this.commonApiService
       .getSunriseSunsetAPI(this.lat, this.lng, when)
       .subscribe((data: any) => {
-        console.log('dinesh paiya ' + JSON.stringify(data));
         this.nextsunrise = moment(data.results.sunrise);
         this.nextsunset = moment(data.results.sunrise);
         this.nextsunriseHHMM = moment(data.results.sunrise).format('h:mm');
+        this.nextsunriseSS = moment(data.results.sunrise).format('ss');
+
         this.nextsunriseA = moment(data.results.sunrise).format('A');
         this.nextsunsetHHMM = moment(data.results.sunset).format('h:mm');
+        this.nextsunsetSS = moment(data.results.sunset).format('ss');
+
         this.nextsunsetA = moment(data.results.sunset).format('A');
         this.cdr.detectChanges();
       });
   }
+
+  menu(param) {
+    console.log(this.myCheckbox.nativeElement.checked, 'Value of checkbox');
+    if (this.myCheckbox.nativeElement.checked) {
+      this.myCheckbox.nativeElement.checked = false;
+    }
+
+    this.router.navigate([`/${param}`]);
+  }
 }
-
-// https://api.sunrise-sunset.org/json?lat=13.067&lng=80.199&date=today
-
-// var duration = moment.duration(end.diff(startTime));
-// var hours = duration.hours(); //hours instead of asHours
-// var minutes = duration.minutes(); //minutes instead of asMinutes
-
-// Line 5812 - Msg: dinesh
-// {"results":{"sunrise":"2021-05-06T00:28:14+00:00","sunset":"2021-05-06T13:03:07+00:00","solar_noon":"2021-05-06T06:45:41+00:00",
-// "day_length":45293,"civil_twilight_begin":"2021-05-06T00:06:09+00:00",
-// "civil_twilight_end":"2021-05-06T13:25:12+00:00","nautical_twilight_begin":"2021-05-05T23:40:14+00:00",
-// "nautical_twilight_end":"2021-05-06T13:51:08+00:00","astronomical_twilight_begin":"2021-05-05T23:14:01+00:00",
-// "astronomical_twilight_end":"2021-05-06T14:17:21+00:00"},"status":"OK"}
-// I/Capacitor/Console: File: http://localhost/tab1-tab1-module.js - Line 5823 - Msg: dinesh hrs: 9
-// I/Capacitor/Console: File: http://localhost/tab1-tab1-module.js - Line 5824 - Msg: dinesh min : 58
-// I/Capacitor/Console: File: http://localhost/tab1-tab1-module.js - Line 5825 - Msg: dinesh SSs : 49
-// I/Capacitor/Console: File: http://localhost/tab1-tab1-module.js - Line 5799 -
-// Msg: {"latitude":11.317423,"longitude":77.72545869999999,
-// "countryCode":"IN","countryName":"India",
-// "postalCode":"638002","administrativeArea":"Tamil Nadu","subAdministrativeArea":"Erode",
-// "locality":"Erode","subLocality":"Moolapalayam","thoroughfare":"6th Street",
-// "subThoroughfare":"","areasOfInterest":["LIC Building"]}
-// I/Capacitor/Console: File: http://localhost/tab1-tab1-module.js - Line 5781 - Msg: dinesh latitude 11.3174269
-// I/Capacitor/Console: File: http://localhost/tab1-tab1-module.js - Line 5782 - Msg: dinesh longitude 77.7257728
-
-// this.nativeGeocoder
-//   .forwardGeocode('Berlin', this.options)
-//   .then((result: NativeGeocoderResult[]) =>
-//     console.log(
-//       'The coordinates are latitude=' +
-//         result[0].latitude +
-//         ' and longitude=' +
-//         result[0].longitude
-//     )
-//   )
-//   .catch((error: any) => console.log(error));
