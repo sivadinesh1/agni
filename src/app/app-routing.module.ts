@@ -7,12 +7,12 @@ const routes: Routes = [
     loadChildren: () =>
       import('./tabs/tabs.module').then((m) => m.TabsPageModule),
   },
-  // {
-  //   path: '',
-  //   loadChildren: () =>
-  //     import('./home/home.module').then((m) => m.HomePageModule),
-  // },
-  { path: '', redirectTo: 'pre-flight', pathMatch: 'full' },
+  {
+    path: '',
+    loadChildren: () =>
+      import('./home/home.module').then((m) => m.HomePageModule),
+  },
+  //{ path: '', redirectTo: 'pre-flight', pathMatch: 'full' },
   {
     path: 'home/:lat/:lng/:locality',
     loadChildren: () =>

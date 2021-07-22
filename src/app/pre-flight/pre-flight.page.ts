@@ -8,6 +8,10 @@ import {
   NativeGeocoderOptions,
 } from '@ionic-native/native-geocoder/ngx';
 import { AlertController } from '@ionic/angular';
+import { Location } from '@angular/common';
+// import { SplashScreen } from '@ionic-native/splash-screen/ngx';
+// import { StatusBar } from '@ionic-native/status-bar/ngx';
+
 
 @Component({
   selector: 'app-pre-flight',
@@ -25,8 +29,55 @@ export class PreFlightPage implements OnInit {
     private geolocation: Geolocation,
     private router: Router,
     private nativeGeocoder: NativeGeocoder,
-    public alertController: AlertController
-  ) {}
+    public alertController: AlertController,
+    private _location: Location,
+    // private splashScreen: SplashScreen,
+    // private statusBar: StatusBar,
+  ) {
+    this.initializeApp();
+  }
+
+
+
+  initializeApp() {
+    // this.platform.ready().then(() => {
+    //   this.statusBar.styleDefault();
+    //   this.splashScreen.hide();
+    // });
+
+
+    this.platform.backButton.subscribeWithPriority(10, (processNextHandler) => {
+      console.log('Back press handler!');
+      this.showExitConfirm();
+
+    });
+
+  }
+
+  showExitConfirm() {
+    this.alertController.create({
+      header: 'App termination',
+      message: 'Do you want to close the app?',
+      backdropDismiss: false,
+      buttons: [{
+        text: 'Stay',
+        role: 'cancel',
+        handler: () => {
+          console.log('Application exit prevented!');
+        }
+      }, {
+        text: 'Exit',
+        handler: () => {
+          // eslint-disable-next-line @typescript-eslint/dot-notation
+          navigator['app'].exitApp();
+        }
+      }]
+    })
+      .then(alert => {
+        alert.present();
+      });
+  }
+
 
   ngOnInit() {
     this.detectLocation();

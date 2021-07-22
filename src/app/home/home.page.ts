@@ -6,7 +6,7 @@ import {
   ChangeDetectorRef,
   ViewChild,
 } from '@angular/core';
-
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 import {
   NativeGeocoder,
   NativeGeocoderResult,
@@ -18,6 +18,8 @@ import * as moment from 'moment';
 import { Subscription, Observable, timer } from 'rxjs';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
+import { AlertController } from '@ionic/angular';
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-home',
@@ -93,29 +95,128 @@ export class HomePage implements OnInit {
   paramsSubscription: Subscription;
 
   constructor(
+    private platform: Platform,
+    private geolocation: Geolocation,
     private nativeGeocoder: NativeGeocoder,
     private commonApiService: CommonApiService,
     private cdr: ChangeDetectorRef,
-    private router: Router,
+    private router: Router, public alertController: AlertController,
     private route: ActivatedRoute
   ) {
-    this.paramsSubscription = this.route.params.subscribe((params) => {
-      this.lat = params.lat;
-      this.lng = params.lng;
-      this.locality = params.locality;
-    });
+    this.basicInit();
+    this.detectLocation();
+
+    // this.paramsSubscription = this.route.params.subscribe((params) => {
+    //   this.lat = params.lat;
+    //   this.lng = params.lng;
+    //   this.locality = params.locality;
+    // });
 
     // inits
-    this.basicInit();
 
-    this.todayDate = moment().format('D MMM YYYY');
-    this.now = moment().format('h:mm');
-    this.nowA = moment().format('A');
 
-    this.today = moment().format('YYYY-MM-DD'); //2021-05-06 - format
-    this.tomorrow = moment().add(1, 'days').format('YYYY-MM-DD');
-    this.tomorrowll = moment().add(1, 'days').format('ll');
+
+
   }
+
+
+
+
+  initializeApp() {
+    // this.platform.ready().then(() => {
+    //   this.statusBar.styleDefault();
+    //   this.splashScreen.hide();
+    // });
+
+
+    this.platform.backButton.subscribeWithPriority(10, (processNextHandler) => {
+      console.log('Back press handler!');
+      this.showExitConfirm();
+
+    });
+
+  }
+
+
+
+  detectLocation() {
+    this.platform.ready().then(() => {
+      this.geolocation
+        .getCurrentPosition({
+          timeout: 20000,
+          enableHighAccuracy: true,
+        })
+        .then((resp) => {
+          this.nativeGeocoder
+            .reverseGeocode(
+              resp.coords.latitude,
+              resp.coords.longitude,
+              this.options
+            )
+            .then((result: NativeGeocoderResult[]) => {
+              this.lat = resp.coords.latitude;
+              this.lng = resp.coords.longitude;
+              this.locality = result[0].locality;
+
+              this.todayDate = moment().format('D MMM YYYY');
+              this.now = moment().format('h:mm');
+              this.nowA = moment().format('A');
+
+              this.today = moment().format('YYYY-MM-DD'); //2021-05-06 - format
+              this.tomorrow = moment().add(1, 'days').format('YYYY-MM-DD');
+              this.tomorrowll = moment().add(1, 'days').format('ll');
+
+              console.log('xx....' + this.lat);
+              console.log('xx....' + this.lng);
+              console.log('xx....' + this.locality);
+
+              this.getSunriseSunset(this.lat, this.lng, this.today);
+
+              this.cdr.markForCheck();
+
+
+
+    this.initializeApp();
+
+            })
+            .catch((error: any) => console.log(error));
+        })
+        .catch((error) => {
+          console.log('Error getting location', error);
+        });
+    });
+  }
+
+
+  showExitConfirm() {
+    this.alertController.create({
+      header: 'Warning!',
+      message: 'Do you want to close the app?',
+      backdropDismiss: false,
+      buttons: [{
+        text: 'Stay',
+        role: 'cancel',
+        handler: () => {
+          console.log('Application exit prevented!');
+        }
+      }, {
+        text: 'Exit',
+        handler: () => {
+          // eslint-disable-next-line @typescript-eslint/dot-notation
+          navigator['app'].exitApp();
+        }
+      }]
+    })
+      .then(alert => {
+        alert.present();
+      });
+  }
+
+  exitAgnihotra() {
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    navigator['app'].exitApp();
+  }
+
 
   basicInit() {
     // combinations:
@@ -142,11 +243,11 @@ export class HomePage implements OnInit {
     });
     // Attn
     // this.getGeoDecoder(this.lat, this.lng);
-    console.log('dinesh lat >> ' + this.lat);
-    console.log('dinesh lng >> ' + this.lng);
-    console.log('dinesh locality >> ' + this.locality);
+    // console.log('dinesh lat >> ' + this.lat);
+    // console.log('dinesh lng >> ' + this.lng);
+    // console.log('dinesh locality >> ' + this.locality);
 
-    this.getSunriseSunset(this.lat, this.lng, this.today);
+    // this.getSunriseSunset(this.lat, this.lng, this.today);
   }
 
   // get locality details based on lat & lng

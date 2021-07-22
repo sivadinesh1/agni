@@ -1,6 +1,6 @@
 {
   "appId": "io.ionic.starter",
-  "appName": "Agni",
+  "appName": "Agnihotra Timer",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",
