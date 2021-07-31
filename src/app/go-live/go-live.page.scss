@@ -1,0 +1,40 @@
+.prayer-container {
+  background: linear-gradient(149.64deg, #fdff88 -1.04%, #c28c00 111.38%);
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: 52px 60px 160px 1fr 160px;
+}
+
+.top {
+  display: grid;
+  grid-template-columns: 50px 1fr;
+  padding: 16px 0px;
+}
+
+.line {
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 2px;
+}
+
+.prayer-icon {
+  text-align: center;
+  padding: 1rem;
+}
+
+.prayer {
+  font-size: 28px;
+  font-weight: bold;
+  padding: 0px 50px;
+  text-align: center;
+}
+
+.matra {
+  font-size: 24px;
+  text-align: left;
+}
+
+.done {
+  text-align: center;
+}

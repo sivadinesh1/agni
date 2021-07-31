@@ -1,3 +1,12 @@
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  height: 95px;
+}
+.datetime {
+  height: 76px;
+}
+
 .normal {
   background-color: #f8f2de;
   color: #000;
@@ -169,7 +178,19 @@
 }
 
 .middleBlockLow {
-  transform: translateY(100%);
+  transform: translateY(10%);
+}
+
+.master-block {
+  display: grid;
+
+  width: 80%;
+  margin: 0 auto;
+  height: 163px;
+  min-height: 163px;
+  background: linear-gradient(149.64deg, #fdff88 -1.04%, #c28c00 111.38%);
+  box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.25);
+  border-radius: 20px;
 }
 
 .bottomMsg {
@@ -178,4 +199,99 @@
 
 .bottomMsgShifted {
   top: 250px;
+}
+
+.daymode {
+  background: linear-gradient(0deg, #d6f3ff 0%, #a0d2ff 100%);
+}
+
+.darkmode {
+  background: linear-gradient(0deg, #1f546a 0%, #00284d 100%);
+}
+.darkmodetxt {
+  color: #fff;
+}
+
+.daymodetxt {
+  color: #00263c;
+}
+
+.nextagnitiming {
+  font-family: "Montserrat", sans-serif;
+  font-size: 22px;
+  color: #a8d6ff;
+  padding: 1rem;
+}
+
+.session {
+  font-family: "Montserrat", sans-serif;
+  font-size: 16px;
+  color: #fff;
+}
+
+.sessiontime {
+  font-family: "Montserrat", sans-serif;
+  font-size: 52px;
+  color: #fff;
+}
+
+.daily-horoscope {
+  background-color: #1565c0;
+  color: #fff;
+
+  display: grid;
+
+  font-size: 16px;
+  font-weight: bold;
+  padding: 1rem 0 1rem 1rem;
+  border-top-left-radius: 50px;
+  border-bottom-left-radius: 50px;
+}
+
+.session-label {
+  font-size: 16px;
+  font-weight: 400;
+
+  text-align: center;
+}
+
+.main-timer {
+  font-size: 52px;
+  font-weight: 800;
+
+  // text-shadow: 0px 2px 4px #000000;
+}
+
+.main-timer-mini {
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.due-in {
+  font-size: 24px;
+  text-align: center;
+
+  color: #fff;
+  font-style: italic;
+  font-weight: 700;
+}
+
+.getready {
+  background-color: #faff00;
+  color: #000;
+  padding: 4px;
+  font-size: 20px;
+  letter-spacing: 8px;
+  font-weight: bold;
+  height: 40px;
+
+  width: 80%;
+  text-align: center;
+  position: relative;
+
+  display: grid;
+  justify-self: center;
+  align-content: center;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
 }

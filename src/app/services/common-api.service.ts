@@ -20,12 +20,12 @@ export class CommonApiService {
     console.log('dinesh333' + longitude);
     console.log('dinesh333' + latitude);
     console.log('dinesh333' + dtWhen);
-    return this.httpClient.get(
-      `https://api.sunrise-sunset.org/json?lat=${longitude}&lng=${latitude}&date=${dtWhen}&formatted=0`
-    );
     // return this.httpClient.get(
-    //   `https://api.sunrise-sunset.org/json?lat=36.7201600&lng=-4.4203400&date=today`
+    //   `https://api.sunrise-sunset.org/json?lat=${longitude}&lng=${latitude}&date=${dtWhen}&formatted=0`
     // );
+    return this.httpClient.get(
+      `https://api.sunrise-sunset.org/json?lat=36.7201600&lng=-4.4203400&date=today`
+    );
   }
 }
 

@@ -4,17 +4,17 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { PreFlightPageRoutingModule } from './pre-flight-routing.module';
+import { SignListPageRoutingModule } from './sign-list-routing.module';
 
-import { PreFlightPage } from './pre-flight.page';
+import { SignListPage } from './sign-list.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    PreFlightPageRoutingModule
+    SignListPageRoutingModule
   ],
-  declarations: [PreFlightPage]
+  declarations: [SignListPage]
 })
-export class PreFlightPageModule {}
+export class SignListPageModule {}

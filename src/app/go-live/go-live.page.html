@@ -1,0 +1,52 @@
+<div class="prayer-container">
+  <div class="top">
+    <div class="back" style="padding: 0 16px">
+      <img
+        src="/assets/back-arrow.svg"
+        alt=""
+        srcset=""
+        width="20px"
+        height="20px"
+        (click)="back()"
+      />
+    </div>
+    <div class="empty">&nbsp;</div>
+  </div>
+  <div>
+    <div class="line">ITS TIME!</div>
+    <div class="line">PERFORM THE YAGNA NOW</div>
+  </div>
+  <div class="prayer-icon">
+    <img
+      src="/assets/prayer-icon.svg"
+      alt=""
+      srcset=""
+      width="130px"
+      height="130px"
+    />
+  </div>
+  <div class="prayer">
+    <div class="matra" *ngIf="this.whichPrayer === 'morning'">
+      <div>{{this.sunriseCopyTxt1}}</div>
+      <div>{{this.sunriseCopyTxt2}}</div>
+      <div style="padding-top: 10px">{{this.sunriseCopyTxt3}}</div>
+      <div>{{this.sunriseCopyTxt4}}</div>
+    </div>
+    <div *ngIf="this.whichPrayer === 'evening'">
+      <div>{{this.sunsetCopyTxt1}}</div>
+      <div>{{this.sunsetCopyTxt2}}</div>
+      <div style="padding-top: 10px">{{this.sunsetCopyTxt3}}</div>
+      <div>{{this.sunsetCopyTxt4}}</div>
+    </div>
+  </div>
+  <div class="done">
+    <img
+      src="/assets/done.svg"
+      (click)="back()"
+      alt=""
+      srcset=""
+      width="152px"
+      height="50px"
+    />
+  </div>
+</div>

@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { PreFlightPage } from './pre-flight.page';
+import { SignDetailPage } from './sign-detail.page';
 
-describe('PreFlightPage', () => {
-  let component: PreFlightPage;
-  let fixture: ComponentFixture<PreFlightPage>;
+describe('SignDetailPage', () => {
+  let component: SignDetailPage;
+  let fixture: ComponentFixture<SignDetailPage>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ PreFlightPage ],
+      declarations: [ SignDetailPage ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(PreFlightPage);
+    fixture = TestBed.createComponent(SignDetailPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

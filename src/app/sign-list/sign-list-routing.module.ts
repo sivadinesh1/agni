@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { PreFlightPage } from './pre-flight.page';
+import { SignListPage } from './sign-list.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: PreFlightPage
+    component: SignListPage
   }
 ];
 
@@ -14,4 +14,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class PreFlightPageRoutingModule {}
+export class SignListPageRoutingModule {}

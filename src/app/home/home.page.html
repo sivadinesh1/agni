@@ -1,144 +1,99 @@
 <ion-content [fullscreen]="true">
-  <div style="display: flex; justify-content: space-between; height: 95px">
-    <div style="cursor: pointer">
-      <nav role="navigation">
-        <div id="menuToggle">
-          <input type="checkbox" #myCheckbox />
-
-          <span></span>
-          <span></span>
-          <span></span>
-
-          <ul id="menu">
-            <a (click)="menu('about')"><li>About</li></a>
-            <a (click)="menu('contact')"><li>Contact</li></a>
-            <a (click)="menu('policy')"><li>Privacy Policy</li></a>
-            <a (click)="menu('disclaimer')"><li>Disclaimer</li></a>
-            <a (click)="exitAgnihotra()"><li>Exit</li></a>
-          </ul>
-        </div>
-      </nav>
-    </div>
-    <div style="padding: 12px 20px">
-      <img
-        src="/assets/maps-and-flags.svg"
-        alt=""
-        srcset=""
-        width="28px"
-      />&nbsp;
-      <span
-        style="
-          display: inline-block;
-          font-size: 18px;
-          font-weight: 400;
-          text-transform: uppercase;
-          transform: translateY(-30%);
-        "
-      >
-        {{this.locality}}
-      </span>
-    </div>
-  </div>
-
   <div
     style="
+      height: 100vh;
       display: grid;
-      width: 100%;
-      position: relative;
-
-      height: 400px;
-      grid-template-rows: 1fr;
+      grid-template-rows: 95px 120px 1fr 100px;
     "
+    [ngClass]="isDark ? 'darkmode' : 'daymode'"
   >
-    <div
-      style="
-        display: inline-block;
-        position: relative;
-        width: 90%;
-        margin: 0 auto;
-        background-color: #f8f2de;
+    <!-- Top Navigation -->
+    <div class="top-nav">
+      <div style="cursor: pointer">
+        <nav role="navigation">
+          <div id="menuToggle">
+            <input type="checkbox" #myCheckbox />
 
-        border-radius: 10px;
-        height: 400px;
-      "
-    >
-      <div style="display: flex; justify-content: space-between">
-        <div
+            <span></span>
+            <span></span>
+            <span></span>
+
+            <ul id="menu">
+              <a (click)="menu('about')"><li>About</li></a>
+              <a (click)="menu('contact')"><li>Contact</li></a>
+              <a (click)="menu('policy')"><li>Privacy Policy</li></a>
+              <a (click)="menu('disclaimer')"><li>Disclaimer</li></a>
+              <a (click)="exitAgnihotra()"><li>Exit</li></a>
+            </ul>
+          </div>
+        </nav>
+      </div>
+      <div style="padding: 12px 20px">
+        <img
+          src="/assets/maps-and-flags.svg"
+          alt=""
+          srcset=""
+          width="28px"
+        />&nbsp;
+        <span
           style="
+            display: inline-block;
+            font-size: 18px;
             font-weight: 400;
-            font-size: 20px;
-            padding: 12px 16px 0px 16px;
-            color: #535353;
+            text-transform: uppercase;
+            transform: translateY(-30%);
           "
+        >
+          {{this.locality}}
+        </span>
+      </div>
+      <div style="padding: 12px 20px">
+        <img src="/assets/exit.svg" alt="" srcset="" width="28px" />
+      </div>
+    </div>
+
+    <!-- Date & Timers -->
+    <div class="datetime">
+      <div
+        style="display: flex; justify-content: space-between"
+        [ngClass]="isDark ? 'darkmodetxt' : 'daymodetxt'"
+      >
+        <div style="padding: 12px 16px 0px 16px; font-size: 12px">TODAY</div>
+        <div style="padding: 12px 16px 0px 16px; font-size: 12px">
+          CURRENT TIME
+        </div>
+      </div>
+      <div
+        style="display: flex; justify-content: space-between"
+        [ngClass]="isDark ? 'darkmodetxt' : 'daymodetxt'"
+      >
+        <div
+          style="font-weight: 400; font-size: 20px; padding: 0px 16px 12px 16px"
         >
           {{this.todayDate}}
         </div>
 
-        <div style="font-size: 20px; padding: 12px 16px 0px 16px">
-          <span style="font-weight: 400; font-size: 24px; color: #535353">
-            {{this.now}}
-          </span>
-          <span style="font-weight: 600; font-size: 20px; color: #535353">
-            {{this.nowA}}
-          </span>
+        <div style="font-size: 20px; padding: 0px 16px 12px 16px">
+          <span style="font-weight: 400; font-size: 24px"> {{this.now}} </span>
+          <span style="font-weight: 600; font-size: 20px"> {{this.nowA}} </span>
         </div>
       </div>
-      <div style="display: flex; justify-content: space-between">
-        <div
-          style="padding: 0px 16px 12px 16px; font-size: 12px; color: #999999"
-        >
-          Day
-        </div>
-        <div
-          style="padding: 0px 16px 12px 16px; font-size: 12px; color: #999999"
-        >
-          Current Time
-        </div>
-      </div>
-      <!-- Sunset & Sunrise over for today -->
-      <div
-        style="display: grid; padding: 5rem 0rem"
-        *ngIf="sunrisePrayer === 'over' && sunsetPrayer==='over' "
-      >
-        <div style="text-align: center">
-          <div style="font-size: 16px">Next Agnihotra time</div>
-          <div style="font-size: 20px; font-weight: bold">Tomorrow Morning</div>
-          <span style="font-size: 32px; font-weight: 700">
-            {{this.nextsunriseHHMM}}
-          </span>
-          <span style="font-size: 24px; font-weight: 700">
-            :{{this.nextsunriseSS}}<span style="font-size: 16px">s</span>
-          </span>
-          <span style="font-size: 20px"> {{this.nextsunriseA}} </span>
-        </div>
-      </div>
+    </div>
 
-      <!-- Sunrise Over & Sunset NOT over for today -->
-      <div
-        style="display: grid; padding: 0rem 0rem; background-color: #f1e9ce"
-        *ngIf="sunrisePrayer === 'over' && sunsetPrayer==='notover' "
-      >
-        <div style="text-align: center; height: 85px; color: #b5b5b5">
-          <div style="font-size: 16px">Morning Agnihotra time (Passed)</div>
-          <div style="text-decoration: line-through; color: #b5b5b5">
-            <span style="font-size: 32px; font-weight: 700">
-              {{this.sunriseHHMM}}
-            </span>
-            <span style="font-size: 32px; font-weight: 700">
-              :{{this.sunriseSS}}<span style="font-size: 24px">s</span>
-            </span>
-            <span style="font-size: 32px"> {{this.sunriseA}} </span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Sunset & Sunrise NOT over for Today -->
+    <div
+      style="display: flex; flex-direction: column; width: 100%; color: #fff"
+    >
+      <!-- STEP1: Sunrise & Sunset NOT over for Today -->
       <div
         style="
           display: grid;
           padding: 5rem 0rem;
-
-          position: absolute;
+          background: linear-gradient(
+            149.64deg,
+            #b1b422 -1.04%,
+            #85630d 111.38%
+          );
+          filter: drop-shadow(0px 0px 20px rgba(0, 0, 0, 0.25));
           text-align: center;
           width: 100%;
         "
@@ -157,319 +112,218 @@
           <span style="font-size: 20px"> {{this.nextsunsetA}} </span>
         </div>
       </div>
-    </div>
-    <!-- Sunrise Over & Sunset Not Over Today && NOT LIVE (show mantra for Evening pooja) MIDDLE-->
-    <div
-      *ngIf="this.sunrisePrayer === 'over' && this.sunsetPrayer === 'notover' && this.live === false"
-      style="
-        display: grid;
-        position: absolute;
-        width: 100vw;
-        height: auto;
-        min-height: 160px;
-        background: linear-gradient(149.64deg, #b1b422 -1.04%, #85630d 111.38%);
-        filter: drop-shadow(0px 0px 20px rgba(0, 0, 0, 0.25));
-      "
-      [ngClass]="{ 'middleBlock': this.sunrisePrayer === 'notover' && this.sunsetPrayer === 'notover' && this.live === false, 'middleBlockLow': this.sunrisePrayer === 'over' && this.sunsetPrayer === 'notover' && this.live === false  }"
-    >
-      <div style="padding: 10px 10px 24px 10px">
-        <div
-          style="
-            font-size: 16px;
-            font-weight: 400;
 
-            text-align: center;
-            color: #fff;
-          "
-        >
-          Evening Agnihotra Time
-        </div>
-        <div style="text-align: center; margin: 0 auto; width: 80%">
-          <span
-            style="
-              font-size: 32px;
-              font-weight: 700;
-              color: #fff278;
-              text-shadow: 0px 2px 4px #000000;
-            "
-          >
-            {{this.sunsetHHMM}}
-          </span>
-          <span
-            style="
-              font-size: 24px;
-              font-weight: 700;
-              color: #fff278;
-              text-shadow: 0px 2px 4px #000000;
-            "
-          >
-            :{{this.sunsetSS}}<span style="font-size: 16px">S</span>
-          </span>
-          <span
-            style="
-              font-size: 24px;
-              color: #fff;
-              text-shadow: 0px 2px 4px #000000;
-            "
-          >
-            {{this.sunsetA}}
-          </span>
-        </div>
-        <div
-          style="
-            text-align: center;
+      <!-- STEP2: Sunrise NOT OVER & Sunset NOT OVER (Morning Yagna Started) (Middle) -->
+      <!-- moved to new page -->
 
-            font-style: italic;
-            color: #fff;
-          "
-        >
-          Time remaining
-        </div>
-        <div
-          style="
-            font-size: 20px;
-            text-align: center;
-
-            color: #fff;
-            font-style: italic;
-            font-weight: 700;
-          "
-        >
-          {{counterTimersHours}}<span style="font-size: 16px; color: #cfcfcf"
-            >h</span
-          >
-          : {{counterTimersMins}}<span style="font-size: 16px; color: #cfcfcf"
-            >m</span
-          >
-          : {{counterTimersSecs}}<span style="font-size: 16px; color: #cfcfcf"
-            >s</span
-          >
-        </div>
-      </div>
+      <!-- STEP3: Sunrise Over & Sunset NOT over for today -->
       <div
-        *ngIf="getready"
-        style="
-          background-color: #faff00;
-          color: #000;
-          padding: 4px;
-          font-size: 16px;
-          letter-spacing: 8px;
-          font-weight: 500;
-          height: 30px;
-          top: 140px;
-          width: 100%;
-          position: absolute;
-          text-align: center;
-        "
+        style="display: grid; padding: 0rem 0rem"
+        *ngIf="sunrisePrayer === 'over' && sunsetPrayer==='notover' "
       >
-        GET READY
-      </div>
-    </div>
-
-    <!-- Sunrise NOT OVER & Sunset NOT OVER (Morning Yagna Started) (Middle) -->
-
-    <div
-      *ngIf="this.sunrisePrayer === 'notover' && this.sunsetPrayer === 'notover' && this.live === true"
-      style="
-        display: grid;
-        position: absolute;
-        width: 100vw;
-        height: auto;
-        min-height: 140px;
-        background: linear-gradient(149.64deg, #b1b422 -1.04%, #85630d 111.38%);
-        filter: drop-shadow(0px 0px 20px rgba(0, 0, 0, 0.25));
-        transform: translateY(50%);
-      "
-    >
-      <div style="padding: 10px 10px 24px 10px">
-        <div
-          style="
-            font-size: 16px;
-            font-weight: 400;
-
-            text-align: center;
-            color: #fff;
-          "
-        >
-          Do Agnihotra yagya now!
-        </div>
-        <div style="padding: 6px 0px 0px 0px; text-align: center">
-          <img src="/assets/agni-icon.png" alt="" srcset="" />
-        </div>
-
-        <div
-          style="
-            text-align: center;
-            font-size: 20px;
-
-            font-weight: 700;
-            font-style: italic;
-            color: #fffbd9;
-            line-height: 27px;
-            padding: 0px 32px;
-            text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-          "
-        >
-          {{this.sunriseCopyTxt}}
+        <div style="text-align: center; height: 85px; color: #7bb6e5">
+          <div style="font-size: 16px">Morning Agnihotra time (Passed)</div>
+          <div style="text-decoration: line-through; color: #7bb6e5">
+            <span style="font-size: 32px; font-weight: 700">
+              {{this.sunriseHHMM}}
+            </span>
+            <span style="font-size: 32px; font-weight: 700">
+              :{{this.sunriseSS}}<span style="font-size: 24px">s</span>
+            </span>
+            <span style="font-size: 32px"> {{this.sunriseA}} </span>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Sunrise OVER & Sunset NOT OVER (Evening Yagna Started) (Middle) -->
+      <!-- STEP4: Sunrise Over & Sunset Not Over Today && NOT LIVE (show mantra for READY Evening pooja) MIDDLE-->
+      <div
+        *ngIf="this.sunrisePrayer === 'over' && this.sunsetPrayer === 'notover' && this.live === false"
+        class="master-block"
+        [ngClass]="{ 
+        'middleBlock': this.sunrisePrayer === 'notover' && this.sunsetPrayer === 'notover' && this.live === false, 
+        'middleBlockLow': this.sunrisePrayer === 'over' && this.sunsetPrayer === 'notover' && this.live === false  }"
+      >
+        <div style="padding: 10px 10px 24px 10px">
+          <div
+            class="session-label"
+            [ngClass]="isDark ? 'darkmodetxt' : 'daymodetxt'"
+          >
+            EVENING AGNIHOTRA TIME
+          </div>
+          <div
+            style="text-align: center; margin: 0 auto; width: 80%"
+            [ngClass]="isDark ? 'darkmodetxt' : 'daymodetxt'"
+          >
+            <span class="main-timer"> {{this.sunsetHHMM}} </span>
+            <span class="main-timer-mini">
+              :{{this.sunsetSS}}<span style="font-size: 16px">S</span>
+            </span>
+            <span class="main-timer-mini"> {{this.sunsetA}} </span>
+          </div>
 
-    <div
-      *ngIf="this.sunrisePrayer === 'over' && this.sunsetPrayer === 'notover' && this.live === true"
-      style="
-        display: grid;
-        position: absolute;
-        width: 100vw;
-        height: auto;
-        min-height: 140px;
-        background: linear-gradient(149.64deg, #b1b422 -1.04%, #85630d 111.38%);
-        filter: drop-shadow(0px 0px 20px rgba(0, 0, 0, 0.25));
-        transform: translateY(50%);
-      "
-    >
-      <div style="padding: 10px 10px 24px 10px">
-        <div
-          style="
-            font-size: 16px;
-            font-weight: 400;
-
-            text-align: center;
-            color: #fff;
-          "
-        >
-          Do Agnihotra yagya now!
-        </div>
-        <div style="padding: 6px 0px 0px 0px; text-align: center">
-          <img src="/assets/agni-icon.png" alt="" srcset="" />
-        </div>
-
-        <div
-          style="
-            text-align: center;
-            font-size: 20px;
-
-            font-weight: 700;
-            font-style: italic;
-            color: #fffbd9;
-            line-height: 27px;
-            padding: 0px 32px;
-            text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-          "
-        >
-          {{this.sunsetCopyTxt}}
-        </div>
-      </div>
-    </div>
-
-    <!-- 12 AM up to sunrise  (MIDDLE) -->
-    <div
-      *ngIf="this.sunrisePrayer === 'notover' && this.sunsetPrayer === 'notover' && this.live === false"
-      style="
-        display: grid;
-        position: absolute;
-        width: 100vw;
-        height: auto;
-        min-height: 140px;
-        background: linear-gradient(149.64deg, #b1b422 -1.04%, #85630d 111.38%);
-        filter: drop-shadow(0px 0px 20px rgba(0, 0, 0, 0.25));
-        transform: translateY(50%);
-      "
-    >
-      <div style="padding: 10px 10px 24px 10px">
-        <div
-          style="
-            font-size: 16px;
-            font-weight: 400;
-
-            text-align: center;
-            color: #fff;
-          "
-        >
-          Morning Agnihotra Time
-        </div>
-        <div style="text-align: center; margin: 0 auto; width: 80%">
-          <span
+          <div class="due-in">
+            {{counterTimersHours}}<span style="font-size: 16px; color: #fff"
+              >h</span
+            >
+            : {{counterTimersMins}}<span style="font-size: 16px; color: #fff"
+              >m</span
+            >
+            : {{counterTimersSecs}}<span style="font-size: 16px; color: #fff"
+              >s</span
+            >
+          </div>
+          <div
             style="
-              font-size: 32px;
-              font-weight: 700;
-              color: #fff278;
-              text-shadow: 0px 2px 4px #000000;
+              text-align: center;
+
+              font-style: italic;
+              color: #fff;
             "
           >
+            remaining
+          </div>
+        </div>
+
+        <div *ngIf="getready" class="getready">GET READY</div>
+      </div>
+
+      <!-- Sunrise OVER & Sunset NOT OVER (Evening Yagna Started) LIVE (Middle) -->
+      <!-- move to new page -->
+
+      <!-- STEP last step: Sunset & Sunrise over for today -->
+      <div
+        style="display: grid; padding: 5rem 0rem"
+        *ngIf="sunrisePrayer === 'over' && sunsetPrayer==='over' "
+      >
+        <div style="text-align: center">
+          <div class="nextagnitiming">NEXT AGNIHOTRA TIME</div>
+          <div class="session">TOMORROW MORNING</div>
+          <span class="sessiontime" style="font-size: 32px; font-weight: 700">
             {{this.nextsunriseHHMM}}
           </span>
-          <span
-            style="
-              font-size: 24px;
-              font-weight: 700;
-              color: #fff278;
-              text-shadow: 0px 2px 4px #000000;
-            "
-          >
-            :{{this.nextsunriseSS}}<span style="font-size: 16px">S</span>
+          <span style="font-size: 24px; font-weight: 700">
+            :{{this.nextsunriseSS}}<span style="font-size: 16px">s</span>
           </span>
-          <span
-            style="
-              font-size: 24px;
-              color: #fff;
-              text-shadow: 0px 2px 4px #000000;
-            "
-          >
-            {{this.nextsunriseA}}
-          </span>
-        </div>
-        <div
-          style="
-            text-align: center;
-
-            font-style: italic;
-            color: #fff;
-          "
-        >
-          Time remaining
-        </div>
-        <div
-          style="
-            font-size: 20px;
-            text-align: center;
-
-            color: #fff;
-            font-style: italic;
-            font-weight: 700;
-          "
-        >
-          {{counterTimersHours}}<span style="font-size: 16px; color: #cfcfcf"
-            >h</span
-          >
-          : {{counterTimersMins}}<span style="font-size: 16px; color: #cfcfcf"
-            >m</span
-          >
-          : {{counterTimersSecs}}<span style="font-size: 16px; color: #cfcfcf"
-            >s</span
-          >
+          <span style="font-size: 20px"> {{this.nextsunriseA}} </span>
         </div>
       </div>
+
+      <!-- 12 AM up to sunrise  (MIDDLE) -->
       <div
-        *ngIf="getready"
+        *ngIf="this.sunrisePrayer === 'notover' && this.sunsetPrayer === 'notover' && this.live === false"
         style="
-          background-color: #faff00;
-          color: #000;
-          padding: 4px;
-          font-size: 16px;
-          letter-spacing: 8px;
-          font-weight: 500;
-          height: 30px;
-          top: 140px;
-          width: 100%;
-          position: absolute;
-          text-align: center;
+          display: grid;
+
+          width: 90vw;
+          height: auto;
+          margin: 0 auto;
+          min-height: 140px;
+          background: linear-gradient(
+            149.64deg,
+            #fdff88 -1.04%,
+            #c28c00 111.38%
+          );
+          box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.25);
+          border-radius: 20px;
         "
       >
-        GET READY
+        <div style="padding: 10px 10px 24px 10px">
+          <div
+            style="
+              font-size: 16px;
+              font-weight: 400;
+
+              text-align: center;
+              color: #fff;
+            "
+          >
+            Morning Agnihotra Time
+          </div>
+          <div style="text-align: center; margin: 0 auto; width: 80%">
+            <span
+              style="
+                font-size: 32px;
+                font-weight: 700;
+                color: #fff278;
+                text-shadow: 0px 2px 4px #000000;
+              "
+            >
+              {{this.nextsunriseHHMM}}
+            </span>
+            <span
+              style="
+                font-size: 24px;
+                font-weight: 700;
+                color: #fff278;
+                text-shadow: 0px 2px 4px #000000;
+              "
+            >
+              :{{this.nextsunriseSS}}<span style="font-size: 16px">S</span>
+            </span>
+            <span
+              style="
+                font-size: 24px;
+                color: #fff;
+                text-shadow: 0px 2px 4px #000000;
+              "
+            >
+              {{this.nextsunriseA}}
+            </span>
+          </div>
+          <div
+            style="
+              text-align: center;
+
+              font-style: italic;
+              color: #fff;
+            "
+          >
+            Time remaining
+          </div>
+          <div
+            style="
+              font-size: 20px;
+              text-align: center;
+
+              color: #fff;
+              font-style: italic;
+              font-weight: 700;
+            "
+          >
+            {{counterTimersHours}}<span style="font-size: 16px; color: #cfcfcf"
+              >h</span
+            >
+            : {{counterTimersMins}}<span style="font-size: 16px; color: #cfcfcf"
+              >m</span
+            >
+            : {{counterTimersSecs}}<span style="font-size: 16px; color: #cfcfcf"
+              >s</span
+            >
+          </div>
+        </div>
+        <div
+          *ngIf="getready"
+          style="
+            background-color: #faff00;
+            color: #000;
+            padding: 4px;
+            font-size: 16px;
+            letter-spacing: 8px;
+            font-weight: 500;
+            height: 30px;
+            top: 140px;
+            width: 100%;
+
+            text-align: center;
+          "
+        >
+          GET READY
+        </div>
       </div>
+    </div>
+
+    <div style="justify-self: end; width: 80%">
+      <div class="daily-horoscope" (click)="signlist()">DAILY HOROSCOPE</div>
     </div>
   </div>
 </ion-content>

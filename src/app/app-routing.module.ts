@@ -12,7 +12,7 @@ const routes: Routes = [
     loadChildren: () =>
       import('./home/home.module').then((m) => m.HomePageModule),
   },
-  //{ path: '', redirectTo: 'pre-flight', pathMatch: 'full' },
+
   {
     path: 'home/:lat/:lng/:locality',
     loadChildren: () =>
@@ -42,12 +42,18 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'pre-flight',
-    loadChildren: () =>
-      import('./pre-flight/pre-flight.module').then(
-        (m) => m.PreFlightPageModule
-      ),
+    path: 'go-live/:session',
+    loadChildren: () => import('./go-live/go-live.module').then( m => m.GoLivePageModule)
   },
+  {
+    path: 'sign-list',
+    loadChildren: () => import('./sign-list/sign-list.module').then( m => m.SignListPageModule)
+  },
+  {
+    path: 'sign-detail',
+    loadChildren: () => import('./sign-detail/sign-detail.module').then( m => m.SignDetailPageModule)
+  },
+
 ];
 @NgModule({
   imports: [

@@ -1,0 +1,31 @@
+<div>
+  <div class="top">
+    <!-- back button -->
+    <div class="back">
+      <span>
+        <img
+          src="/assets/back-arrow.svg"
+          alt=""
+          srcset=""
+          width="20px"
+          height="20px"
+          (click)="back()"
+        />
+      </span>
+      <span class="heading"> SELECT YOUR SUN SIGN </span>
+    </div>
+
+    <div *ngFor="let item of list" class="row">
+      <div class="item" (click)="godetail(item)">{{item}}</div>
+      <div style="cursor: pointer">
+        <img
+          src="/assets/right-arrow.svg"
+          alt=""
+          srcset=""
+          width="8px"
+          height="12px"
+        />
+      </div>
+    </div>
+  </div>
+</div>

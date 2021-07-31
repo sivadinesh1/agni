@@ -1,0 +1,24 @@
+.row {
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: 1fr 30px;
+}
+
+.back {
+  padding: 1rem;
+}
+
+.heading {
+  padding-left: 16px;
+  font-size: 16px;
+  font-weight: bold;
+  position: relative;
+  top: -2px;
+}
+
+.item {
+  padding-left: 32px;
+  font-size: 18px;
+  font-weight: regular;
+  cursor: pointer;
+}
