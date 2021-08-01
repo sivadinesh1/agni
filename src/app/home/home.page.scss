@@ -94,7 +94,7 @@
   margin-bottom: 5px;
   position: relative;
 
-  background: #00396f;
+  background: #fff;
   border-radius: 3px;
 
   z-index: 1;
@@ -184,7 +184,7 @@
 .master-block {
   display: grid;
 
-  width: 80%;
+  width: 90%;
   margin: 0 auto;
   height: 163px;
   min-height: 163px;
@@ -231,7 +231,7 @@
 
 .sessiontime {
   font-family: "Montserrat", sans-serif;
-  font-size: 52px;
+  font-size: 46px;
   color: #fff;
 }
 
@@ -256,7 +256,7 @@
 }
 
 .main-timer {
-  font-size: 52px;
+  font-size: 46px;
   font-weight: 800;
 
   // text-shadow: 0px 2px 4px #000000;
@@ -294,4 +294,62 @@
   align-content: center;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
+}
+
+.nextup {
+  color: #00263c;
+  font-size: 16px;
+  font-weight: regular;
+}
+
+.nextuptimer {
+  color: #00263c;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.nextuptimermini {
+  color: #00263c;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.nextuptimerampm {
+  color: #00263c;
+  font-size: 20px;
+}
+
+.nextupmiddle {
+  font-size: 16px;
+  font-weight: 400;
+
+  text-align: center;
+  color: #00263c;
+  line-height: 20px;
+}
+
+.nextupmiddletimer {
+  font-size: 46px;
+  font-weight: 800;
+  color: #00263c;
+}
+
+.nextuptimermini {
+  font-size: 24px;
+  font-weight: 800;
+  color: #00263c;
+}
+
+.nextupmiddletimer-ampm {
+  font-size: 20px;
+  font-weight: 800;
+  color: #00263c;
+}
+
+.nextupmiddletimer-remaining {
+  text-align: center;
+  color: #fff;
+  font-size: 24px;
+  font-weight: bold;
+  text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
 }

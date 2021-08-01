@@ -30,11 +30,20 @@
       </div>
       <div style="padding: 12px 20px">
         <img
+          *ngIf="isDark"
+          src="/assets/maps-and-flags-white.svg"
+          alt=""
+          srcset=""
+          width="28px"
+        />
+        <img
+          *ngIf="!isDark"
           src="/assets/maps-and-flags.svg"
           alt=""
           srcset=""
           width="28px"
-        />&nbsp;
+        />
+        &nbsp;
         <span
           style="
             display: inline-block;
@@ -48,7 +57,22 @@
         </span>
       </div>
       <div style="padding: 12px 20px">
-        <img src="/assets/exit.svg" alt="" srcset="" width="28px" />
+        <img
+          *ngIf="isDark"
+          src="/assets/exit-white.svg"
+          alt=""
+          srcset=""
+          width="28px"
+          (click)="exitAgnihotra()"
+        />
+        <img
+          *ngIf="!isDark"
+          src="/assets/exit.svg"
+          alt=""
+          srcset=""
+          width="28px"
+          (click)="exitAgnihotra()"
+        />
       </div>
     </div>
 
@@ -75,7 +99,7 @@
 
         <div style="font-size: 20px; padding: 0px 16px 12px 16px">
           <span style="font-weight: 400; font-size: 24px"> {{this.now}} </span>
-          <span style="font-weight: 600; font-size: 20px"> {{this.nowA}} </span>
+          <span style="font-weight: 400; font-size: 20px"> {{this.nowA}} </span>
         </div>
       </div>
     </div>
@@ -83,35 +107,16 @@
     <div
       style="display: flex; flex-direction: column; width: 100%; color: #fff"
     >
-      <!-- STEP1: Sunrise & Sunset NOT over for Today -->
-      <div
-        style="
-          display: grid;
-          padding: 5rem 0rem;
-          background: linear-gradient(
-            149.64deg,
-            #b1b422 -1.04%,
-            #85630d 111.38%
-          );
-          filter: drop-shadow(0px 0px 20px rgba(0, 0, 0, 0.25));
-          text-align: center;
-          width: 100%;
-        "
-        [ngClass]="{ 'bottomMsg': this.sunrisePrayer === 'notover' && this.sunsetPrayer === 'notover' && this.live === false, 'bottomMsgShifted': this.sunrisePrayer === 'over' && this.sunsetPrayer === 'notover' && this.live === false  }"
-        *ngIf="sunrisePrayer === 'notover' && sunsetPrayer==='notover' && this.live === false "
-      >
-        <div style="text-align: center">
-          <div style="font-size: 16px">Evening Agnihotra Time</div>
-
-          <span style="font-size: 32px; font-weight: 700">
-            {{this.nextsunsetHHMM}}
-          </span>
-          <span style="font-size: 24px; font-weight: 700">
-            :{{this.nextsunsetSS}}<span style="font-size: 16px">s</span>
-          </span>
-          <span style="font-size: 20px"> {{this.nextsunsetA}} </span>
-        </div>
-      </div>
+      <!-- <ion-skeleton-text
+        *ngIf="!isDetected"
+        animated
+        style="width: 60%"
+      ></ion-skeleton-text>
+      <ion-skeleton-text
+        *ngIf="!isDetected"
+        animated
+        style="width: 40%"
+      ></ion-skeleton-text> -->
 
       <!-- STEP2: Sunrise NOT OVER & Sunset NOT OVER (Morning Yagna Started) (Middle) -->
       <!-- moved to new page -->
@@ -122,15 +127,19 @@
         *ngIf="sunrisePrayer === 'over' && sunsetPrayer==='notover' "
       >
         <div style="text-align: center; height: 85px; color: #7bb6e5">
-          <div style="font-size: 16px">Morning Agnihotra time (Passed)</div>
+          <div style="font-size: 16px">
+            <del>MORNING AGNIHOTRA TIME</del>
+          </div>
           <div style="text-decoration: line-through; color: #7bb6e5">
-            <span style="font-size: 32px; font-weight: 700">
-              {{this.sunriseHHMM}}
-            </span>
-            <span style="font-size: 32px; font-weight: 700">
-              :{{this.sunriseSS}}<span style="font-size: 24px">s</span>
-            </span>
-            <span style="font-size: 32px"> {{this.sunriseA}} </span>
+            <del>
+              <span style="font-size: 32px; font-weight: 700">
+                {{this.sunriseHHMM}}
+              </span>
+              <span style="font-size: 32px; font-weight: 700">
+                :{{this.sunriseSS}}<span style="font-size: 24px">s</span>
+              </span>
+              <span style="font-size: 32px"> {{this.sunriseA}} </span>
+            </del>
           </div>
         </div>
       </div>
@@ -178,6 +187,7 @@
 
               font-style: italic;
               color: #fff;
+              text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
             "
           >
             remaining
@@ -228,78 +238,22 @@
         "
       >
         <div style="padding: 10px 10px 24px 10px">
-          <div
-            style="
-              font-size: 16px;
-              font-weight: 400;
-
-              text-align: center;
-              color: #fff;
-            "
-          >
-            Morning Agnihotra Time
-          </div>
+          <div class="nextupmiddle">MORNING AGNIHOTRA TIME</div>
           <div style="text-align: center; margin: 0 auto; width: 80%">
-            <span
-              style="
-                font-size: 32px;
-                font-weight: 700;
-                color: #fff278;
-                text-shadow: 0px 2px 4px #000000;
-              "
-            >
-              {{this.nextsunriseHHMM}}
-            </span>
-            <span
-              style="
-                font-size: 24px;
-                font-weight: 700;
-                color: #fff278;
-                text-shadow: 0px 2px 4px #000000;
-              "
-            >
+            <span class="nextupmiddletimer"> {{this.nextsunriseHHMM}} </span>
+            <span class="nextuptimermini">
               :{{this.nextsunriseSS}}<span style="font-size: 16px">S</span>
             </span>
-            <span
-              style="
-                font-size: 24px;
-                color: #fff;
-                text-shadow: 0px 2px 4px #000000;
-              "
-            >
-              {{this.nextsunriseA}}
-            </span>
+            <span class="nextupmiddletimer-ampm"> {{this.nextsunriseA}} </span>
           </div>
-          <div
-            style="
-              text-align: center;
 
-              font-style: italic;
-              color: #fff;
-            "
-          >
-            Time remaining
-          </div>
-          <div
-            style="
-              font-size: 20px;
-              text-align: center;
-
-              color: #fff;
-              font-style: italic;
-              font-weight: 700;
-            "
-          >
-            {{counterTimersHours}}<span style="font-size: 16px; color: #cfcfcf"
-              >h</span
-            >
-            : {{counterTimersMins}}<span style="font-size: 16px; color: #cfcfcf"
+          <div class="nextupmiddletimer-remaining">
+            {{counterTimersHours}}<span>h</span> : {{counterTimersMins}}<span
               >m</span
             >
-            : {{counterTimersSecs}}<span style="font-size: 16px; color: #cfcfcf"
-              >s</span
-            >
+            : {{counterTimersSecs}}<span>s</span>
           </div>
+          <div style="text-align: center; font-size: 16px">remaining</div>
         </div>
         <div
           *ngIf="getready"
@@ -318,6 +272,31 @@
           "
         >
           GET READY
+        </div>
+      </div>
+
+      <!-- 12 AM up to sunrise (bottom) LAST STEP: Sunrise & Sunset NOT over for Today -->
+      <div
+        style="
+          display: grid;
+          padding: 5rem 0rem;
+
+          text-align: center;
+          width: 100%;
+        "
+        [ngClass]="{ 
+        'bottomMsg': this.sunrisePrayer === 'notover' && this.sunsetPrayer === 'notover' && this.live === false, 
+        'bottomMsgShifted': this.sunrisePrayer === 'over' && this.sunsetPrayer === 'notover' && this.live === false  }"
+        *ngIf="sunrisePrayer === 'notover' && sunsetPrayer==='notover' && this.live === false "
+      >
+        <div style="text-align: center">
+          <div class="nextup">EVENING AGNIHOTRA TIME</div>
+
+          <span class="nextuptimer"> {{this.nextsunsetHHMM}} </span>
+          <span class="nextuptimermini">
+            :{{this.nextsunsetSS}}<span style="font-size: 16px">s</span>
+          </span>
+          <span class="nextuptimerampm"> {{this.nextsunsetA}} </span>
         </div>
       </div>
     </div>

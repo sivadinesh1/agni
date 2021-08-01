@@ -50,7 +50,7 @@ const routes: Routes = [
     loadChildren: () => import('./sign-list/sign-list.module').then( m => m.SignListPageModule)
   },
   {
-    path: 'sign-detail',
+    path: 'sign-detail/:sign',
     loadChildren: () => import('./sign-detail/sign-detail.module').then( m => m.SignDetailPageModule)
   },
 

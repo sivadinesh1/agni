@@ -9,20 +9,20 @@ import { AppComponent } from './app.component';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { NativeGeocoder } from '@ionic-native/native-geocoder/ngx';
 import { HttpClientModule } from '@angular/common/http';
-import { MenuComponent } from './components/menu/menu.component';
+
 
 
 @NgModule({
-  declarations: [AppComponent,MenuComponent],
+  declarations: [AppComponent,],
   entryComponents: [],
   imports: [
     BrowserModule,
     HttpClientModule,
     IonicModule.forRoot(),
     AppRoutingModule,
-    
+
   ],
-  exports: [MenuComponent],
+  exports: [],
   providers: [
     Geolocation,
     NativeGeocoder,

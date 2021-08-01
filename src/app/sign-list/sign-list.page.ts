@@ -18,7 +18,7 @@ export class SignListPage implements OnInit {
   }
 
   godetail(item) {
-    this.router.navigate([`/sign-detail`]);
+    this.router.navigate([`/sign-detail/${item}`]);
   }
 
   back() {

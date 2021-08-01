@@ -1,9 +1,95 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>sign-detail</ion-title>
-  </ion-toolbar>
-</ion-header>
+<div class="wrapper">
+  <div class="top">
+    <!-- back button -->
+    <div class="back">
+      <span>
+        <img
+          src="/assets/back-arrow.svg"
+          alt=""
+          srcset=""
+          width="20px"
+          height="20px"
+          (click)="back()"
+        />
+      </span>
+      <span class="heading"> &nbsp; </span>
+    </div>
+  </div>
+  <div class="main">
+    <div class="heading">{{this.sign}}</div>
+    <div class="heading">{{this.currentdate}}</div>
+    <ion-skeleton-text
+      *ngIf="isloading"
+      animated
+      style="width: 50%"
+    ></ion-skeleton-text>
+    <div class="current-date">
+      <div class="heading">TODAY'S PREDICTION</div>
+      <div class="content-txt">{{this.description}}</div>
+      <ion-skeleton-text
+        *ngIf="isloading"
+        animated
+        style="width: 70%"
+      ></ion-skeleton-text>
+      <ion-skeleton-text
+        *ngIf="isloading"
+        animated
+        style="width: 60%"
+      ></ion-skeleton-text>
+      <ion-skeleton-text
+        *ngIf="isloading"
+        animated
+        style="width: 70%"
+      ></ion-skeleton-text>
+      <ion-skeleton-text
+        *ngIf="isloading"
+        animated
+        style="width: 50%"
+      ></ion-skeleton-text>
+    </div>
+    <div class="current-date">
+      <div class="heading">LUCKY TIME</div>
+      <div class="content-txt">{{this.luckyTime}}</div>
+    </div>
+    <div class="current-date">
+      <div class="heading">LUCKY COLOR</div>
+      <ion-skeleton-text
+        *ngIf="isloading"
+        animated
+        style="width: 60%"
+      ></ion-skeleton-text>
 
-<ion-content>
+      <div class="content-txt">{{this.luckyColor}}</div>
+      <ion-skeleton-text
+        *ngIf="isloading"
+        animated
+        style="width: 40%"
+      ></ion-skeleton-text>
+    </div>
+    <div class="current-date">
+      <div class="heading">LUCKY NUMBER</div>
+      <div class="content-txt">{{this.luckyNumber}}</div>
+      <ion-skeleton-text
+        *ngIf="isloading"
+        animated
+        style="width: 20%"
+      ></ion-skeleton-text>
+    </div>
 
-</ion-content>
+    <!-- <div *ngIf="isloading">
+      <ion-item>
+        <ion-label>
+          <h3>
+            <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
+          </h3>
+          <p>
+            <ion-skeleton-text animated style="width: 80%"></ion-skeleton-text>
+          </p>
+          <p>
+            <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+          </p>
+        </ion-label>
+      </ion-item>
+    </div> -->
+  </div>
+</div>
