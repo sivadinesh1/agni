@@ -92,7 +92,7 @@ export class HomePage implements OnInit {
   sunriseA: any;
   sunsetA: any;
 
-  live: any;
+  //live: any;
   paramsSubscription: Subscription;
 
   constructor(
@@ -104,9 +104,9 @@ export class HomePage implements OnInit {
     private router: Router, public alertController: AlertController,
     private route: ActivatedRoute
   ) {
-     
 
-     // combinations:
+    this.route.params.subscribe((params) => {
+         // combinations:
     // Today : Sunrise & Sunset (Not Over)
     // Today : Sunrise (Over) & Sunset(Not Over)
     // Today : Sunrise (Over) & Sunset (Over)
@@ -115,14 +115,17 @@ export class HomePage implements OnInit {
     // Today : Sunrise (Over) & Sunset (Not Over) : Sunset (Live)
     this.sunrisePrayer = '';
     this.sunsetPrayer = '';
+    console.log(' inside home init params');
 
-
-    this.live = false;  // check: change it back to false
     this.getready = false;
 
-    // this.initializeApp();
     this.detectLocation();
     this.cdr.markForCheck();
+
+    });
+
+    // comment in production
+    // this.getSunriseSunset('', '', moment(new Date()).format('YYYY-MM-DD'));
 
   }
 
@@ -135,22 +138,6 @@ export class HomePage implements OnInit {
       this.cdr.detectChanges();
     });
 
-  }
-
-
-  initializeApp() {
-
-    // check:
-      // this.todayDate = moment(new Date()).format('D MMM YYYY');
-      // this.now = moment(new Date()).format('h:mm');
-      // this.nowA = moment(new Date()).format('A');
-
-      // this.today = moment(new Date()).format('YYYY-MM-DD'); //2021-05-06 - format
-      // this.tomorrow = moment(new Date()).add(1, 'days').format('YYYY-MM-DD');
-      // this.tomorrowll = moment(new Date()).add(1, 'days').format('ll');
-
-      // this.getSunriseSunset(this.lat, this.lng, this.today);
-
     this.platform.backButton.subscribeWithPriority(10, (processNextHandler) => {
       console.log('Back press handler!');
       this.showExitConfirm();
@@ -158,6 +145,7 @@ export class HomePage implements OnInit {
     });
 
   }
+
 
   detectLocation() {
     this.isDetected = false;
@@ -192,10 +180,6 @@ export class HomePage implements OnInit {
 
               this.cdr.markForCheck();
 
-
-
-    // this.initializeApp();
-
             })
             .catch((error: any) => console.log(error));
         })
@@ -213,14 +197,6 @@ export class HomePage implements OnInit {
 
         this.sunrise = data.results.sunrise;
         this.sunset = data.results.sunset;
-debugger;
-        // this.sunrise = moment(data.results.sunrise, 'h:mm:ss a' ).format(
-        //   'MMMM Do YYYY, h:mm:ss a'
-        // );
-
-        // this.sunset = moment(data.results.sunset, 'h:mm:ss a').format(
-        //   'MMMM Do YYYY, h:mm:ss a'
-        // );
 
         this.sunrise = moment(data.results.sunrise ).format(
           'MMMM Do YYYY, h:mm:ss a'
@@ -231,19 +207,6 @@ debugger;
         );
 
 
-// sunrise: "5:19:58 AM"
-// sunset: "7:28:22 PM"
-
-        // this.sunriseHHMM = moment(data.results.sunrise, 'h:mm:ss a').format('h:mm');
-        // this.sunriseSS = moment(data.results.sunrise, 'h:mm:ss a').format('ss');
-        // this.sunriseA = moment(data.results.sunrise, 'h:mm:ss a').format('A');
-
-        // this.sunsetHHMM = moment(data.results.sunset, 'h:mm:ss a').format('h:mm');
-        // this.sunsetSS = moment(data.results.sunset, 'h:mm:ss a').format('ss');
-        // this.sunsetA = moment(data.results.sunset, 'h:mm:ss a').format('A');
-
-        // this.timetoSunset = moment(data.results.sunset, 'h:mm:ss a').fromNow();
-        // this.timetoSunrise = moment(data.results.sunrise, 'h:mm:ss a').fromNow();
 
         this.sunriseHHMM = moment(data.results.sunrise).format('h:mm');
         this.sunriseSS = moment(data.results.sunrise).format('ss');
@@ -255,10 +218,6 @@ debugger;
 
         this.timetoSunset = moment(data.results.sunset).fromNow();
         this.timetoSunrise = moment(data.results.sunrise).fromNow();
-
-        // const duration = moment.duration(
-        //   moment().diff(moment(data.results.sunrise, 'h:mm:ss a'))
-        // );
 
         const duration = moment.duration(
           moment().diff(moment(data.results.sunrise))
@@ -342,12 +301,10 @@ debugger;
 
     this.subscription = this.everySecond.subscribe((secondscounter) => {
       if (action === 'waitingsunset') {
-        // duration1 = moment.duration(moment().diff(moment(data.results.sunset, 'h:mm:ss a')));
+
         duration1 = moment.duration(moment().diff(moment(data.results.sunset)));
       } else if (action === 'waitingsunrise') {
-        // duration1 = moment.duration(
-        //   moment(data.results.sunrise, 'h:mm:ss a').diff(moment())
-        // );
+
         duration1 = moment.duration(
           moment(data.results.sunrise).diff(moment())
         );
@@ -369,7 +326,7 @@ debugger;
         this.counterTimersSecs === 0 &&
         this.counterTimersMins === 0
       ) {
-        this.live = true;
+        // this.live = true;
         if (action === 'waitingsunset') {
           this.goLive('evening');
         } else {
@@ -386,7 +343,7 @@ debugger;
   goLive(params) {
     this.playAudio();
     this.router.navigate([`go-live/${params}`]);
-      this.live = false;
+      // this.live = false;
       this.getready = false;
   }
 
@@ -394,16 +351,6 @@ debugger;
     this.commonApiService
       .getSunriseSunsetAPI(this.lat, this.lng, when)
       .subscribe((data: any) => {
-        // this.nextsunrise = moment(data.results.sunrise, 'h:mm:ss a');
-        // this.nextsunset = moment(data.results.sunrise, 'h:mm:ss a');
-        // this.nextsunriseHHMM = moment(data.results.sunrise, 'h:mm:ss a').format('h:mm');
-        // this.nextsunriseSS = moment(data.results.sunrise, 'h:mm:ss a').format('ss');
-
-        // this.nextsunriseA = moment(data.results.sunrise, 'h:mm:ss a').format('A');
-        // this.nextsunsetHHMM = moment(data.results.sunset, 'h:mm:ss a').format('h:mm');
-        // this.nextsunsetSS = moment(data.results.sunset, 'h:mm:ss a').format('ss');
-
-        // this.nextsunsetA = moment(data.results.sunset, 'h:mm:ss a').format('A');
 
         this.nextsunrise = moment(data.results.sunrise);
         this.nextsunset = moment(data.results.sunrise);

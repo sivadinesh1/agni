@@ -52,6 +52,7 @@
             text-transform: uppercase;
             transform: translateY(-30%);
           "
+          [ngClass]="isDark ? 'darkmodetxt' : 'daymodetxt'"
         >
           {{this.locality}}
         </span>
@@ -146,11 +147,11 @@
 
       <!-- STEP4: Sunrise Over & Sunset Not Over Today && NOT LIVE (show mantra for READY Evening pooja) MIDDLE-->
       <div
-        *ngIf="this.sunrisePrayer === 'over' && this.sunsetPrayer === 'notover' && this.live === false"
+        *ngIf="this.sunrisePrayer === 'over' && this.sunsetPrayer === 'notover' "
         class="master-block"
         [ngClass]="{ 
-        'middleBlock': this.sunrisePrayer === 'notover' && this.sunsetPrayer === 'notover' && this.live === false, 
-        'middleBlockLow': this.sunrisePrayer === 'over' && this.sunsetPrayer === 'notover' && this.live === false  }"
+        'middleBlock': this.sunrisePrayer === 'notover' && this.sunsetPrayer === 'notover' , 
+        'middleBlockLow': this.sunrisePrayer === 'over' && this.sunsetPrayer === 'notover'   }"
       >
         <div style="padding: 10px 10px 24px 10px">
           <div
@@ -220,7 +221,7 @@
 
       <!-- 12 AM up to sunrise  (MIDDLE) -->
       <div
-        *ngIf="this.sunrisePrayer === 'notover' && this.sunsetPrayer === 'notover' && this.live === false"
+        *ngIf="this.sunrisePrayer === 'notover' && this.sunsetPrayer === 'notover' "
         style="
           display: grid;
 
@@ -285,9 +286,9 @@
           width: 100%;
         "
         [ngClass]="{ 
-        'bottomMsg': this.sunrisePrayer === 'notover' && this.sunsetPrayer === 'notover' && this.live === false, 
-        'bottomMsgShifted': this.sunrisePrayer === 'over' && this.sunsetPrayer === 'notover' && this.live === false  }"
-        *ngIf="sunrisePrayer === 'notover' && sunsetPrayer==='notover' && this.live === false "
+        'bottomMsg': this.sunrisePrayer === 'notover' && this.sunsetPrayer === 'notover' , 
+        'bottomMsgShifted': this.sunrisePrayer === 'over' && this.sunsetPrayer === 'notover'   }"
+        *ngIf="sunrisePrayer === 'notover' && sunsetPrayer==='notover'  "
       >
         <div style="text-align: center">
           <div class="nextup">EVENING AGNIHOTRA TIME</div>

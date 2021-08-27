@@ -16,14 +16,13 @@ import { map, shareReplay } from 'rxjs/operators';
 export class CommonApiService {
   constructor(private httpClient: HttpClient) {}
 
-  getSunriseSunsetAPI(longitude, latitude, dtWhen) {
+  getSunriseSunsetAPI(latitude, longitude, dtWhen) {
     console.log('long' + longitude);
     console.log('lat' + latitude);
     console.log('when:' + dtWhen);
-    // `https://api.sunrise-sunset.org/json?lat=${longitude}&lng=${latitude}&date=${dtWhen}&formatted=0`
 
     return this.httpClient.get(
-     `https://api.sunrise-sunset.org/json?lat=${longitude}&lng=${latitude}&date=${dtWhen}&formatted=0`
+     `https://api.sunrise-sunset.org/json?lat=${latitude}&lng=${longitude}&date=${dtWhen}&formatted=0`
     );
     // return this.httpClient.get(
     //   `https://api.sunrise-sunset.org/json?lat=1.290270&lng=-103.851959&date=today`
