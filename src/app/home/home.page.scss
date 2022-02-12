@@ -94,7 +94,6 @@
   margin-bottom: 5px;
   position: relative;
 
-  background: #fff;
   border-radius: 3px;
 
   z-index: 1;
@@ -208,6 +207,14 @@
 .darkmode {
   background: linear-gradient(0deg, #1f546a 0%, #00284d 100%);
 }
+.bg_darkmode {
+  background: #fff !important;
+}
+
+.bg_daymode {
+  background: #000 !important;
+}
+
 .darkmodetxt {
   color: #fff;
 }

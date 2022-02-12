@@ -1,10 +1,54 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ConnectivityService } from './services/connectivity.service';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
 })
-export class AppComponent {
-  constructor() {}
+export class AppComponent implements OnInit {
+  constructor(
+    public alertController: AlertController,
+    private connectivity: ConnectivityService) {}
+
+  ngOnInit() {
+
+    this.connectivity.appIsOnline$.subscribe(online => {
+
+      console.log(online);
+
+      if (online) {
+
+          console.log('App is online');
+
+      } else {
+
+          console.log('App is offline');
+          this.presentAlert();
+
+
+      }
+
+    });
+
+  }
+
+  async presentAlert() {
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Connection Not Available',
+      message: 'Internet Access not available. Check your data or WiFi.',
+      buttons: ['OK']
+    });
+
+    await alert.present();
+
+    const { role } = await alert.onDidDismiss();
+    console.log('onDidDismiss resolved with role', role);
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    navigator['app'].exitApp();
+  }
+
+
 }

@@ -5,6 +5,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   ViewChild,
+  resolveForwardRef,
 } from '@angular/core';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import {
@@ -20,7 +21,10 @@ import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { Platform } from '@ionic/angular';
-
+import { initialize } from '@ionic/core';
+import { ConnectivityService } from '../services/connectivity.service';
+import { FireStoreService } from '../services/firestore.service';
+// serverTimestamp - firestore details
 
 @Component({
   selector: 'app-home',
@@ -75,9 +79,15 @@ export class HomePage implements OnInit {
   nextsunriseA: any;
   nextsunsetA: any;
 
-  options: NativeGeocoderOptions = {
+  // options: NativeGeocoderOptions = {
+  //   useLocale: true,
+  //   maxResults: 5,
+  // };
+
+  // geocoder options
+  nativeGeocoderOptions: NativeGeocoderOptions = {
     useLocale: true,
-    maxResults: 5,
+    maxResults: 5
   };
 
   today: any;
@@ -95,6 +105,20 @@ export class HomePage implements OnInit {
   //live: any;
   paramsSubscription: Subscription;
 
+  // geolocation options
+  options = {
+    timeout: 10000,
+    enableHighAccuracy: true,
+    maximumAge: 3600
+  };
+
+  latitude: any = 0; //latitude
+  longitude: any = 0; //longitude
+  address: string;
+
+  private ideas: Observable<any>;
+
+
   constructor(
     private platform: Platform,
     private geolocation: Geolocation,
@@ -102,35 +126,71 @@ export class HomePage implements OnInit {
     private commonApiService: CommonApiService,
     private cdr: ChangeDetectorRef,
     private router: Router, public alertController: AlertController,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private connectivity: ConnectivityService,
+    private fireStoreService: FireStoreService
   ) {
 
-    this.route.params.subscribe((params) => {
-         // combinations:
-    // Today : Sunrise & Sunset (Not Over)
-    // Today : Sunrise (Over) & Sunset(Not Over)
-    // Today : Sunrise (Over) & Sunset (Over)
-    // Today : Sunrise & Sunset (Over)
-    // Today : Sunrise & Sunset (Not Over) : Sunrise (Live)
-    // Today : Sunrise (Over) & Sunset (Not Over) : Sunset (Live)
-    this.sunrisePrayer = '';
-    this.sunsetPrayer = '';
-    console.log(' inside home init params');
+        this.initializeAppMeta();
 
-    this.getready = false;
+        this.route.params.subscribe((params) => {
+            // combinations:
+          // Today : Sunrise & Sunset (Not Over)
+          // Today : Sunrise (Over) & Sunset(Not Over)
+          // Today : Sunrise (Over) & Sunset (Over)
+          // Today : Sunrise & Sunset (Over)
+          // Today : Sunrise & Sunset (Not Over) : Sunrise (Live)
+          // Today : Sunrise (Over) & Sunset (Not Over) : Sunset (Live)
+          this.sunrisePrayer = '';
+          this.sunsetPrayer = '';
+          console.log(' inside home init params');
 
-    this.detectLocation();
-    this.cdr.markForCheck();
+          this.getready = false;
 
-    });
+          //  this.detectLocation();
+          this.connectivity.appIsOnline$.subscribe(online => {
+            if (online) {
+              this.getCurrentCoordinates();
+              this.fireStoreService.getIdeas().subscribe(data => {
+                console.log('ideaArrays', JSON.stringify(data));
+              });
+
+              this.cdr.markForCheck();
+            }
+          });
+
+      });
 
     // comment in production
     // this.getSunriseSunset('', '', moment(new Date()).format('YYYY-MM-DD'));
 
   }
 
+
+  initializeAppMeta() {
+    this.todayDate = moment(new Date()).format('D MMM YYYY');
+    this.now = moment(new Date()).format('h:mm');
+    this.nowA = moment(new Date()).format('A');
+
+    this.today = moment(new Date()).format('YYYY-MM-DD'); //2021-05-06 - format
+    this.tomorrow = moment(new Date()).add(1, 'days').format('YYYY-MM-DD');
+    this.tomorrowll = moment(new Date()).add(1, 'days').format('ll');
+  }
+
   ngOnInit() {
-    // Current Time counter
+        // Current Time counter
+        this.initializeClock();
+
+        // device back button exit alert confirmation
+        this.platform.backButton.subscribeWithPriority(10, (processNextHandler) => {
+          console.log('Back press handler!');
+          this.showExitConfirm();
+
+        });
+
+  }
+
+  initializeClock() {
     this.subscription = this.everySecond.subscribe((seconds) => {
       this.now = moment().format('h:mm');
       this.nowA = moment().format('A');
@@ -138,119 +198,144 @@ export class HomePage implements OnInit {
       this.cdr.detectChanges();
     });
 
-    this.platform.backButton.subscribeWithPriority(10, (processNextHandler) => {
-      console.log('Back press handler!');
-      this.showExitConfirm();
-
-    });
-
   }
 
 
-  detectLocation() {
-    this.isDetected = false;
-    this.platform.ready().then(() => {
-      this.geolocation
-        .getCurrentPosition({
-          timeout: 20000,
-          enableHighAccuracy: true,
-        })
-        .then((resp) => {
-          this.nativeGeocoder
-            .reverseGeocode(
-              resp.coords.latitude,
-              resp.coords.longitude,
-              this.options
-            )
-            .then((result: NativeGeocoderResult[]) => {
-              this.lat = resp.coords.latitude;
-              this.lng = resp.coords.longitude;
-              this.locality = result[0].locality;
-              this.isDetected = true;
+  // use geolocation to get user's device coordinates
+  getCurrentCoordinates() {
+    this.geolocation.getCurrentPosition().then((resp) => {
+      console.log(resp);
+      debugger;
+      console.log('latitude: ' + resp.coords.latitude);
+      console.log('longitude: ' + resp.coords.longitude);
 
-              this.todayDate = moment(new Date()).format('D MMM YYYY');
-              this.now = moment(new Date()).format('h:mm');
-              this.nowA = moment(new Date()).format('A');
+      this.latitude = resp.coords.latitude;
+      this.longitude = resp.coords.longitude;
+      // get address
+      this.getAddress(resp.coords.latitude, resp.coords.longitude);
 
-              this.today = moment(new Date()).format('YYYY-MM-DD'); //2021-05-06 - format
-              this.tomorrow = moment(new Date()).add(1, 'days').format('YYYY-MM-DD');
-              this.tomorrowll = moment(new Date()).add(1, 'days').format('ll');
+      // get sunrise & sunset
+      this.getSunriseSunset(this.latitude, this.longitude, this.today);
 
-              this.getSunriseSunset(this.lat, this.lng, this.today);
+     }).catch((error) => {
+       console.log('Error getting location', error);
+     });
+  }
 
-              this.cdr.markForCheck();
 
-            })
-            .catch((error: any) => console.log(error));
-        })
-        .catch((error) => {
-          console.log('Error getting location', error);
-        });
+
+  // get address using coordinates
+  getAddress(latitude,longitude){
+    this.nativeGeocoder.reverseGeocode(latitude, longitude, this.nativeGeocoderOptions)
+    .then((result: NativeGeocoderResult[]) => {
+      // prettify address
+      //this.address = this.pretifyAddress(res[0]);
+      this.locality = result[0].locality;
+             this.isDetected = true;
+
+             const row = {
+                latitude,
+                longitude,
+                locality: result[0].locality,
+                time: moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
+             };
+             this.fireStoreService.addIdea(row);
+    })
+    .catch((error: any) => {
+      alert('Error getting address '+ JSON.stringify(error));
+      this.presentAlert();
     });
   }
 
-  getSunriseSunset(lat, lng, when) {
+  // address
+  pretifyAddress(address){
+    const obj = [];
+    let data = '';
+    // eslint-disable-next-line guard-for-in
+    for (const key in address) {
+      obj.push(address[key]);
+    }
+    obj.reverse();
+    for (const val in obj) {
+      if(obj[val].length)
+      {data += obj[val]+', ';}
+    }
+    return address.slice(0, -2);
+  }
+
+
+  // detectLocation() {
+  //   this.isDetected = false;
+  //   this.platform.ready().then(() => {
+  //     this.geolocation
+  //       .getCurrentPosition({
+  //         timeout: 20000,
+  //         enableHighAccuracy: true,
+  //       })
+  //       .then((resp) => {
+  //         this.nativeGeocoder
+  //           .reverseGeocode(
+  //             resp.coords.latitude,
+  //             resp.coords.longitude,
+  //             this.nativeGeocoderOptions
+  //           )
+  //           .then((result: NativeGeocoderResult[]) => {
+  //             this.lat = resp.coords.latitude;
+  //             this.lng = resp.coords.longitude;
+  //             this.locality = result[0].locality;
+  //             this.isDetected = true;
+
+  //             this.todayDate = moment(new Date()).format('D MMM YYYY');
+  //             this.now = moment(new Date()).format('h:mm');
+  //             this.nowA = moment(new Date()).format('A');
+
+  //             this.today = moment(new Date()).format('YYYY-MM-DD'); //2021-05-06 - format
+  //             this.tomorrow = moment(new Date()).add(1, 'days').format('YYYY-MM-DD');
+  //             this.tomorrowll = moment(new Date()).add(1, 'days').format('ll');
+
+  //             this.getSunriseSunset(this.lat, this.lng, this.today);
+
+  //             this.cdr.markForCheck();
+
+  //           })
+  //           .catch((error: any) => console.log(error));
+  //       })
+  //       .catch((error) => {
+  //         console.log('Error getting location', error);
+  //       });
+  //   });
+  // }
+
+
+ // return sunrise & sunset time
+
+  getSunriseSunset(latitude, longitude, when) {
     this.commonApiService
-      .getSunriseSunsetAPI(lat, lng, when)
+      .getSunriseSunsetAPI(latitude, longitude, when)
       .subscribe((data: any) => {
         console.log('dinesh getSunriseSunset ' + JSON.stringify(data));
 
-        this.sunrise = data.results.sunrise;
-        this.sunset = data.results.sunset;
-
-        this.sunrise = moment(data.results.sunrise ).format(
-          'MMMM Do YYYY, h:mm:ss a'
-        );
-
-        this.sunset = moment(data.results.sunset).format(
-          'MMMM Do YYYY, h:mm:ss a'
-        );
-
-
-
-        this.sunriseHHMM = moment(data.results.sunrise).format('h:mm');
-        this.sunriseSS = moment(data.results.sunrise).format('ss');
-        this.sunriseA = moment(data.results.sunrise).format('A');
-
-        this.sunsetHHMM = moment(data.results.sunset).format('h:mm');
-        this.sunsetSS = moment(data.results.sunset).format('ss');
-        this.sunsetA = moment(data.results.sunset).format('A');
-
-        this.timetoSunset = moment(data.results.sunset).fromNow();
-        this.timetoSunrise = moment(data.results.sunrise).fromNow();
-
-        const duration = moment.duration(
-          moment().diff(moment(data.results.sunrise))
-        );
-
-        const hours = duration.hours(); //hours instead of asHours
-        const minutes = duration.minutes(); //minutes instead of asMinutes
-        const seconds = duration.seconds();
-
-
-          console.log('timetoSunrise' + this.timetoSunrise);
+        // received sunrise & sunset time from API
+        this.setSunriseSunsetFormats(data.results.sunrise, data.results.sunset);
 
         // *** find if SUNRISE (TODAY) is over or not *** //
         // *** If sunrise NOT OVER then sunset is also NOT OVER *** //
-        if (this.timetoSunrise.indexOf('ago') !== -1) {
+        if(this.isSunriseOver() && this.isSunsetOver()) {
           this.sunrisePrayer = 'over';
+          this.sunsetPrayer = 'over';
+          this.isDark = true;
+          this.nextSunriseSunset('tomorrow');
+          this.counterCalculator(data, 'waitingsunrise');
+        } else if(this.isSunriseOver() && !this.isSunsetOver()) {
 
-          // *** If SUNRISE OVER THEN CHECK SUNSET *** //
-          if (this.timetoSunset.indexOf('ago') !== -1) {
-            this.sunsetPrayer = 'over';
-            this.isDark = true;
-            this.tomorrowSunsetSunrise('tomorrow');
-            this.counterCalculator(data, 'waitingsunrise');
-          } else {
-            this.sunsetPrayer = 'notover';
-            this.isDark = false;
-            this.tomorrowSunsetSunrise('today');
-            this.counterCalculator(data, 'waitingsunset');
-          }
-        } else if (this.timetoSunrise.indexOf('in') !== -1) {
+          this.sunsetPrayer = 'notover';
+          this.isDark = false;
+          this.nextSunriseSunset('today');
+          this.counterCalculator(data, 'waitingsunset');
+        } else if(!this.isSunriseOver()) {
           this.sunrisePrayer = 'notover';
           this.sunsetPrayer = 'notover';
-          this.tomorrowSunsetSunrise('today');
+          this.nextSunriseSunset('today');
           this.counterCalculator(data, 'waitingsunrise');
           this.isDark = false;
         }
@@ -259,6 +344,36 @@ export class HomePage implements OnInit {
       });
   }
 
+  setSunriseSunsetFormats(sunrise, sunset) {
+    this.sunrise = moment(sunrise ).format(
+      'MMMM Do YYYY, h:mm:ss a'
+    );
+
+    this.sunset = moment(sunset).format(
+      'MMMM Do YYYY, h:mm:ss a'
+    );
+
+    this.sunriseHHMM = moment(sunrise).format('h:mm');
+    this.sunriseSS = moment(sunrise).format('ss');
+    this.sunriseA = moment(sunrise).format('A');
+
+    this.sunsetHHMM = moment(sunset).format('h:mm');
+    this.sunsetSS = moment(sunset).format('ss');
+    this.sunsetA = moment(sunset).format('A');
+
+    this.timetoSunset = moment(sunset).fromNow();
+    this.timetoSunrise = moment(sunrise).fromNow();
+
+  }
+
+  // check sunrise over or not
+  isSunriseOver() {
+    return (this.timetoSunrise.indexOf('ago') !== -1) ? true : false;
+  }
+
+  isSunsetOver() {
+    return (this.timetoSunset.indexOf('ago') !== -1) ? true: false;
+  }
 
   showExitConfirm() {
     this.alertController.create({
@@ -347,21 +462,23 @@ export class HomePage implements OnInit {
       this.getready = false;
   }
 
-  tomorrowSunsetSunrise(when) {
+  nextSunriseSunset(when) {
     this.commonApiService
-      .getSunriseSunsetAPI(this.lat, this.lng, when)
+      .getSunriseSunsetAPI(this.latitude, this.longitude, when)
       .subscribe((data: any) => {
+        const tempSunrise = data.results.sunrise;
+        const tempSunset = data.results.sunset;
 
-        this.nextsunrise = moment(data.results.sunrise);
-        this.nextsunset = moment(data.results.sunrise);
-        this.nextsunriseHHMM = moment(data.results.sunrise).format('h:mm');
-        this.nextsunriseSS = moment(data.results.sunrise).format('ss');
+        this.nextsunrise = moment(tempSunrise);
+        this.nextsunset = moment(tempSunrise);
+        this.nextsunriseHHMM = moment(tempSunrise).format('h:mm');
+        this.nextsunriseSS = moment(tempSunrise).format('ss');
 
-        this.nextsunriseA = moment(data.results.sunrise).format('A');
-        this.nextsunsetHHMM = moment(data.results.sunset).format('h:mm');
-        this.nextsunsetSS = moment(data.results.sunset).format('ss');
+        this.nextsunriseA = moment(tempSunrise).format('A');
+        this.nextsunsetHHMM = moment(tempSunset).format('h:mm');
+        this.nextsunsetSS = moment(tempSunset).format('ss');
 
-        this.nextsunsetA = moment(data.results.sunset).format('A');
+        this.nextsunsetA = moment(tempSunset).format('A');
 
 
         this.cdr.detectChanges();
@@ -380,6 +497,23 @@ export class HomePage implements OnInit {
 
   signlist() {
     this.router.navigate([`/sign-list`]);
+  }
+
+
+  async presentAlert() {
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Location Not Found',
+      message: 'Unable to get GPS location. Enable your data, Wifi or Location Sharing',
+      buttons: ['OK']
+    });
+
+    await alert.present();
+
+    const { role } = await alert.onDidDismiss();
+    console.log('onDidDismiss resolved with role', role);
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    navigator['app'].exitApp();
   }
 
 }

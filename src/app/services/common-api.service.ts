@@ -17,8 +17,8 @@ export class CommonApiService {
   constructor(private httpClient: HttpClient) {}
 
   getSunriseSunsetAPI(latitude, longitude, dtWhen) {
-    console.log('long' + longitude);
-    console.log('lat' + latitude);
+    console.log('longitude' + longitude);
+    console.log('latitude' + latitude);
     console.log('when:' + dtWhen);
 
     return this.httpClient.get(

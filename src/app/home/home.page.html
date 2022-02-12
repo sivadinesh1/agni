@@ -14,9 +14,9 @@
           <div id="menuToggle">
             <input type="checkbox" #myCheckbox />
 
-            <span></span>
-            <span></span>
-            <span></span>
+            <span [ngClass]="isDark ? 'bg_darkmode' : 'bg_daymode'"></span>
+            <span [ngClass]="isDark ? 'bg_darkmode' : 'bg_daymode'"></span>
+            <span [ngClass]="isDark ? 'bg_darkmode' : 'bg_daymode'"></span>
 
             <ul id="menu">
               <a (click)="menu('about')"><li>About</li></a>
@@ -47,7 +47,7 @@
         <span
           style="
             display: inline-block;
-            font-size: 18px;
+            font-size: 14px;
             font-weight: 400;
             text-transform: uppercase;
             transform: translateY(-30%);
@@ -99,7 +99,7 @@
         </div>
 
         <div style="font-size: 20px; padding: 0px 16px 12px 16px">
-          <span style="font-weight: 400; font-size: 24px"> {{this.now}} </span>
+          <span style="font-weight: 400; font-size: 20px"> {{this.now}} </span>
           <span style="font-weight: 400; font-size: 20px"> {{this.nowA}} </span>
         </div>
       </div>
