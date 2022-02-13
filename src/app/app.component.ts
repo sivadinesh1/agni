@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ConnectivityService } from './services/connectivity.service';
 import { AlertController } from '@ionic/angular';
+import { Platform } from '@ionic/angular';
+import { Device } from '@awesome-cordova-plugins/device/ngx';
 
 @Component({
   selector: 'app-root',
@@ -9,25 +11,23 @@ import { AlertController } from '@ionic/angular';
 })
 export class AppComponent implements OnInit {
   constructor(
-    public alertController: AlertController,
-    private connectivity: ConnectivityService) {}
+    public alertController: AlertController,private platform: Platform,
+    private connectivity: ConnectivityService,private device: Device) {
+      // this.platform.ready().then(() => {
+      //   console.log('Platform ready');
+      //   console.log('Device UUID is: ' + this.device.uuid);
+      // });
+    }
 
   ngOnInit() {
 
     this.connectivity.appIsOnline$.subscribe(online => {
 
-      console.log(online);
-
       if (online) {
-
           console.log('App is online');
-
       } else {
-
           console.log('App is offline');
           this.presentAlert();
-
-
       }
 
     });

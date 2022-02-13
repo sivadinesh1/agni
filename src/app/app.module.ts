@@ -18,6 +18,8 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 
 import { AngularFireModule } from '@angular/fire/compat';
 
+import { Device } from '@awesome-cordova-plugins/device/ngx';
+
 @NgModule({
   declarations: [AppComponent,],
   entryComponents: [],
@@ -33,7 +35,7 @@ import { AngularFireModule } from '@angular/fire/compat';
   exports: [],
   providers: [
     Geolocation,
-    NativeGeocoder,
+    NativeGeocoder,Device,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
   ],
   bootstrap: [AppComponent],

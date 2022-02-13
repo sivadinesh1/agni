@@ -26,6 +26,8 @@ import { ConnectivityService } from '../services/connectivity.service';
 import { FireStoreService } from '../services/firestore.service';
 // serverTimestamp - firestore details
 
+import { Device } from '@awesome-cordova-plugins/device/ngx';
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
@@ -116,8 +118,8 @@ export class HomePage implements OnInit {
   longitude: any = 0; //longitude
   address: string;
 
-  private ideas: Observable<any>;
-
+  ideas: Observable<any>;
+  phoneId: any;
 
   constructor(
     private platform: Platform,
@@ -128,8 +130,14 @@ export class HomePage implements OnInit {
     private router: Router, public alertController: AlertController,
     private route: ActivatedRoute,
     private connectivity: ConnectivityService,
-    private fireStoreService: FireStoreService
+    private fireStoreService: FireStoreService,private device: Device
   ) {
+
+    this.platform.ready().then(() => {
+      console.log('Platform ready');
+      console.log('Device UUID is: ' + this.device.uuid);
+      this.phoneId = this.device.uuid;
+    });
 
         this.initializeAppMeta();
 
@@ -152,7 +160,7 @@ export class HomePage implements OnInit {
             if (online) {
               this.getCurrentCoordinates();
               this.fireStoreService.getIdeas().subscribe(data => {
-                console.log('ideaArrays', JSON.stringify(data));
+                // console.log('ideaArrays', JSON.stringify(data));
               });
 
               this.cdr.markForCheck();
@@ -204,10 +212,10 @@ export class HomePage implements OnInit {
   // use geolocation to get user's device coordinates
   getCurrentCoordinates() {
     this.geolocation.getCurrentPosition().then((resp) => {
-      console.log(resp);
-      debugger;
-      console.log('latitude: ' + resp.coords.latitude);
-      console.log('longitude: ' + resp.coords.longitude);
+      // console.log(resp);
+      // debugger;
+      // console.log('latitude: ' + resp.coords.latitude);
+      // console.log('longitude: ' + resp.coords.longitude);
 
       this.latitude = resp.coords.latitude;
       this.longitude = resp.coords.longitude;
@@ -234,6 +242,7 @@ export class HomePage implements OnInit {
              this.isDetected = true;
 
              const row = {
+               phoneId: this.phoneId,
                 latitude,
                 longitude,
                 locality: result[0].locality,
@@ -264,47 +273,6 @@ export class HomePage implements OnInit {
   }
 
 
-  // detectLocation() {
-  //   this.isDetected = false;
-  //   this.platform.ready().then(() => {
-  //     this.geolocation
-  //       .getCurrentPosition({
-  //         timeout: 20000,
-  //         enableHighAccuracy: true,
-  //       })
-  //       .then((resp) => {
-  //         this.nativeGeocoder
-  //           .reverseGeocode(
-  //             resp.coords.latitude,
-  //             resp.coords.longitude,
-  //             this.nativeGeocoderOptions
-  //           )
-  //           .then((result: NativeGeocoderResult[]) => {
-  //             this.lat = resp.coords.latitude;
-  //             this.lng = resp.coords.longitude;
-  //             this.locality = result[0].locality;
-  //             this.isDetected = true;
-
-  //             this.todayDate = moment(new Date()).format('D MMM YYYY');
-  //             this.now = moment(new Date()).format('h:mm');
-  //             this.nowA = moment(new Date()).format('A');
-
-  //             this.today = moment(new Date()).format('YYYY-MM-DD'); //2021-05-06 - format
-  //             this.tomorrow = moment(new Date()).add(1, 'days').format('YYYY-MM-DD');
-  //             this.tomorrowll = moment(new Date()).add(1, 'days').format('ll');
-
-  //             this.getSunriseSunset(this.lat, this.lng, this.today);
-
-  //             this.cdr.markForCheck();
-
-  //           })
-  //           .catch((error: any) => console.log(error));
-  //       })
-  //       .catch((error) => {
-  //         console.log('Error getting location', error);
-  //       });
-  //   });
-  // }
 
 
  // return sunrise & sunset time
@@ -313,7 +281,7 @@ export class HomePage implements OnInit {
     this.commonApiService
       .getSunriseSunsetAPI(latitude, longitude, when)
       .subscribe((data: any) => {
-        console.log('dinesh getSunriseSunset ' + JSON.stringify(data));
+
 
         // received sunrise & sunset time from API
         this.setSunriseSunsetFormats(data.results.sunrise, data.results.sunset);
