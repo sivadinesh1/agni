@@ -42,7 +42,7 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'go-live/:session',
+    path: 'go-live/:session/:phoneId/:locality',
     loadChildren: () => import('./go-live/go-live.module').then( m => m.GoLivePageModule)
   },
   {

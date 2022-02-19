@@ -5,8 +5,10 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   ViewChild,
-  resolveForwardRef,
+  resolveForwardRef,QueryList, ViewChildren
 } from '@angular/core';
+
+
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import {
   NativeGeocoder,
@@ -20,13 +22,14 @@ import { Subscription, Observable, timer } from 'rxjs';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { AlertController } from '@ionic/angular';
-import { Platform } from '@ionic/angular';
+import { Platform, NavController, IonRouterOutlet } from '@ionic/angular';
 import { initialize } from '@ionic/core';
 import { ConnectivityService } from '../services/connectivity.service';
 import { FireStoreService } from '../services/firestore.service';
 // serverTimestamp - firestore details
 
 import { Device } from '@awesome-cordova-plugins/device/ngx';
+import { App as CapacitorApp } from '@capacitor/app';
 
 @Component({
   selector: 'app-home',
@@ -36,6 +39,7 @@ import { Device } from '@awesome-cordova-plugins/device/ngx';
 })
 export class HomePage implements OnInit {
   @ViewChild('myCheckbox') myCheckbox;
+  @ViewChildren(IonRouterOutlet) routerOutlets: QueryList<IonRouterOutlet>;
 
   lat: any;
   lng: any;
@@ -286,6 +290,9 @@ export class HomePage implements OnInit {
         // received sunrise & sunset time from API
         this.setSunriseSunsetFormats(data.results.sunrise, data.results.sunset);
 
+        console.log('this.isSunriseOver() sunrise: ' + this.isSunriseOver());
+        console.log('this.isSunsetOver() sunset: ' + this.isSunsetOver());
+
         // *** find if SUNRISE (TODAY) is over or not *** //
         // *** If sunrise NOT OVER then sunset is also NOT OVER *** //
         if(this.isSunriseOver() && this.isSunsetOver()) {
@@ -296,6 +303,7 @@ export class HomePage implements OnInit {
           this.counterCalculator(data, 'waitingsunrise');
         } else if(this.isSunriseOver() && !this.isSunsetOver()) {
 
+          this.sunrisePrayer = 'over';
           this.sunsetPrayer = 'notover';
           this.isDark = false;
           this.nextSunriseSunset('today');
@@ -368,8 +376,10 @@ export class HomePage implements OnInit {
   }
 
   exitAgnihotra() {
+    CapacitorApp.exitApp();
     // eslint-disable-next-line @typescript-eslint/dot-notation
-    navigator['app'].exitApp();
+  //  (navigator as any).app.exitApp();
+  
   }
 
   playAudio() {
@@ -423,10 +433,9 @@ export class HomePage implements OnInit {
     });
   }
 
-  goLive(params) {
+  goLive(session) {
     this.playAudio();
-    this.router.navigate([`go-live/${params}`]);
-      // this.live = false;
+    this.router.navigate([`go-live/${session}/${this.phoneId}/${this.locality}`]);
       this.getready = false;
   }
 
@@ -481,7 +490,38 @@ export class HomePage implements OnInit {
     const { role } = await alert.onDidDismiss();
     console.log('onDidDismiss resolved with role', role);
     // eslint-disable-next-line @typescript-eslint/dot-notation
-    navigator['app'].exitApp();
+    // navigator['app'].exitApp();
+    this.backButtonEvent();
   }
 
+  // closeApp() {
+  //   this.platform.backButton.subscribeWithPriority(999999, () => {
+  //     (navigator as any).app.exitApp();
+  //   // or trigger any action you want to achieve
+  //   }); //Amended missing a closing bracket
+
+
+backButtonEvent() {
+  CapacitorApp.addListener('backButton', ({canGoBack}) => {
+    if(!canGoBack){
+      CapacitorApp.exitApp();
+    } else {
+      window.history.back();
+    }
+  });
+
+  // this.platform.backButton.subscribe(async () => {
+
+  //     this.routerOutlets.forEach((outlet: IonRouterOutlet) => {
+  //         if (outlet && outlet.canGoBack()) {
+  //             outlet.pop();
+  //         } else  {
+
+  //              (navigator as any).app.exitApp();
+  //         }
+  //     });
+  // });
 }
+
+}
+

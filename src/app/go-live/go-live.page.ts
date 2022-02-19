@@ -7,6 +7,8 @@ import {
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
+import * as moment from 'moment';
+import { FireStoreService } from '../services/firestore.service';
 
 @Component({
   selector: 'app-go-live',
@@ -17,6 +19,10 @@ import { Router } from '@angular/router';
 export class GoLivePage implements OnInit {
 
   whichPrayer: string;
+
+  locality = '';
+  session = '';
+  phoneId = '';
 
   sunriseCopyTxt1 =
     'SOORYAAYA SWAAHAA,';
@@ -40,16 +46,28 @@ export class GoLivePage implements OnInit {
     'PRAJAAPATAYE IDAM NA MAMA';
 
 
-constructor(private activatedroute: ActivatedRoute, private router: Router, ) {
+constructor(private activatedroute: ActivatedRoute, private router: Router, private fireStoreService: FireStoreService,) {
 
   this.whichPrayer = this.activatedroute.snapshot.paramMap.get('session');
-  console.log('which prayer...' + this.whichPrayer);
+  this.session = this.activatedroute.snapshot.paramMap.get('session');
+  this.phoneId = this.activatedroute.snapshot.paramMap.get('phoneId');
+  this.locality = this.activatedroute.snapshot.paramMap.get('locality');
+
+
 }
 
   ngOnInit() {
   }
 
   back() {
+    const row = {
+      phoneId: this.phoneId,
+      session: this.session,
+       locality: this.locality,
+       time: moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
+    };
+    this.fireStoreService.addIdea(row);
+
     this.router.navigate([`/`]);
   }
 

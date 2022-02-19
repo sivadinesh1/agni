@@ -25,7 +25,7 @@ export class CommonApiService {
      `https://api.sunrise-sunset.org/json?lat=${latitude}&lng=${longitude}&date=${dtWhen}&formatted=0`
     );
     // return this.httpClient.get(
-    //   `https://api.sunrise-sunset.org/json?lat=1.290270&lng=-103.851959&date=today`
+    //   `https://api.sunrise-sunset.org/json?lat=25.2653471&lng=-55.2924914&date=today`
     // );
   }
 
@@ -43,6 +43,6 @@ export class CommonApiService {
 
   // "sunrise":"2021-08-01T00:33:56+00:00",
   // "sunset":"2021-08-01T13:17:26+00:00",
-  
+
   // "sunrise":"2021-08-01T00:33:56+00:00",
   // "sunset":"2021-08-01T13:17:26+00:00"

@@ -1,8 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+
+import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { ConnectivityService } from './services/connectivity.service';
 import { AlertController } from '@ionic/angular';
-import { Platform } from '@ionic/angular';
+
 import { Device } from '@awesome-cordova-plugins/device/ngx';
+import { Platform, NavController, IonRouterOutlet } from '@ionic/angular';
+import { Plugins } from '@capacitor/core';
+const { App } = Plugins;
 
 @Component({
   selector: 'app-root',
@@ -10,6 +14,8 @@ import { Device } from '@awesome-cordova-plugins/device/ngx';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent implements OnInit {
+  @ViewChildren(IonRouterOutlet) routerOutlets: QueryList<IonRouterOutlet>;
+
   constructor(
     public alertController: AlertController,private platform: Platform,
     private connectivity: ConnectivityService,private device: Device) {
@@ -17,6 +23,11 @@ export class AppComponent implements OnInit {
       //   console.log('Platform ready');
       //   console.log('Device UUID is: ' + this.device.uuid);
       // });
+
+      
+
+
+      this.backButtonEvent();
     }
 
   ngOnInit() {
@@ -47,8 +58,20 @@ export class AppComponent implements OnInit {
     const { role } = await alert.onDidDismiss();
     console.log('onDidDismiss resolved with role', role);
     // eslint-disable-next-line @typescript-eslint/dot-notation
-    navigator['app'].exitApp();
+    (navigator as any).app.exitApp();
   }
 
+  backButtonEvent() {
+    this.platform.backButton.subscribe(async () => {
+
+        this.routerOutlets.forEach((outlet: IonRouterOutlet) => {
+            if (outlet && outlet.canGoBack()) {
+                outlet.pop();
+            } else  {
+              App.exitApp();
+            }
+        });
+    });
+}
 
 }

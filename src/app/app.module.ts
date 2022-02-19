@@ -26,7 +26,10 @@ import { Device } from '@awesome-cordova-plugins/device/ngx';
   imports: [
     BrowserModule,
     HttpClientModule,
-    IonicModule.forRoot(),
+    
+    IonicModule.forRoot({
+      hardwareBackButton: true
+    }),
     AppRoutingModule,
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFirestoreModule

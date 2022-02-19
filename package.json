@@ -22,6 +22,7 @@
     "@angular/router": "~13.2.2",
     "@awesome-cordova-plugins/device": "^5.39.1",
     "@capacitor/android": "^3.4.1",
+    "@capacitor/app": "^1.1.0",
     "@capacitor/core": "3.4.1",
     "@ionic-native/core": "^5.36.0",
     "@ionic-native/geolocation": "^5.36.0",
